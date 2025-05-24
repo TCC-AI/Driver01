@@ -726,12 +726,13 @@ async function handlePasswordChange() {
     messageElement.className = 'message';
     
     try {
+        // 方法1: 使用 POST 請求
         const response = await fetch(SCRIPT_URL, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: JSON.stringify({
+            body: new URLSearchParams({
                 action: 'resetPassword',
                 username: userData.username,
                 currentPassword: currentPassword,
@@ -745,32 +746,75 @@ async function handlePasswordChange() {
             messageElement.textContent = '密碼已成功更新！';
             messageElement.className = 'message';
             
-            // 2秒後關閉模態框
             setTimeout(() => {
                 hidePasswordModal();
-                // 重置表單
-                document.getElementById('current-password').value = '';
-                document.getElementById('new-password').value = '';
-                document.getElementById('confirm-password').value = '';
-                messageElement.textContent = '';
             }, 2000);
         } else {
             messageElement.textContent = data.message || '密碼更新失敗';
             messageElement.className = 'error-message';
         }
     } catch (error) {
-        console.error('密碼更新錯誤:', error);
-        messageElement.textContent = '密碼更新失敗，請稍後再試';
-        messageElement.className = 'error-message';
-} finally {
-    // 延遲恢復按鈕狀態，避免立即重新觸發
-    setTimeout(() => {
-        saveButton.disabled = false;
-        saveButton.textContent = originalText;
-    }, 100);
+        console.error('POST 方法失敗，嘗試 GET 方法:', error);
+        
+        // 方法2: 如果 POST 失敗，嘗試 GET 請求
+        try {
+            const getResponse = await fetch(`${SCRIPT_URL}?action=resetPassword&username=${encodeURIComponent(userData.username)}&currentPassword=${encodeURIComponent(currentPassword)}&newPassword=${encodeURIComponent(newPassword)}`);
+            const getData = await getResponse.json();
+            
+            if (getData.success) {
+                messageElement.textContent = '密碼已成功更新！';
+                messageElement.className = 'message';
+                
+                setTimeout(() => {
+                    hidePasswordModal();
+                }, 2000);
+            } else {
+                messageElement.textContent = getData.message || '密碼更新失敗';
+                messageElement.className = 'error-message';
+            }
+        } catch (getError) {
+            console.error('GET 方法也失敗:', getError);
+            messageElement.textContent = '網路連線問題，請檢查網路後重試';
+            messageElement.className = 'error-message';
+        }
+    } finally {
+        setTimeout(() => {
+            saveButton.disabled = false;
+            saveButton.textContent = originalText;
+        }, 100);
+    }
 }
 
+// 添加到 JavaScript 中任何位置
+async function testApiConnection() {
+    try {
+        console.log('測試 API 連線...');
+        const response = await fetch(`${SCRIPT_URL}?action=test`);
+        const data = await response.json();
+        console.log('API 測試結果:', data);
+        return data;
+    } catch (error) {
+        console.error('API 連線測試失敗:', error);
+        return { success: false, error: error.message };
+    }
 }
+
+// 在登入成功後調用測試
+function showDeliveryForm() {
+    document.getElementById('login-container').classList.add('hidden');
+    document.getElementById('delivery-container').classList.remove('hidden');
+    document.getElementById('welcome-message').textContent = `歡迎：${userData.name}`;
+    
+    // 確保模態框是隱藏的
+    document.getElementById('password-modal').classList.add('hidden');
+    
+    // 測試 API 連線
+    testApiConnection();
+    
+    // 啟動閒置計時器
+    resetInactivityTimer();
+}
+        
 
 
         // 載入下拉選單資料
