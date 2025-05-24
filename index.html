@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>配送資訊登錄系統</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "微軟正黑體", sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
+        }
+
+        button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #3a7bc8;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .button-group button {
+            flex: 1;
+        }
+
+        #reset-btn {
+            background-color: #e74c3c;
+        }
+
+        #reset-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .message {
+            color: #2ecc71;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #welcome-message {
+            text-align: right;
+            color: #4a90e2;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        /* 歷史記錄樣式 */
+        .nav-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .nav-tabs button {
+            background-color: transparent;
+            color: #555;
+            border: none;
+            border-bottom: 3px solid transparent;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: auto;
+        }
+        
+        .nav-tabs button.active {
+            color: #4a90e2;
+            border-bottom-color: #4a90e2;
+        }
+        
+        .tab-content > div {
+            display: none;
+        }
+        
+        .tab-content > div.active {
+            display: block;
+        }
+        
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .history-table th, .history-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .history-table th {
+            background-color: #f2f2f2;
+            position: sticky;
+            top: 0;
+        }
+        
+        .history-container {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        
+        .date-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .date-filter label {
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
+        
+        .date-filter input {
+            flex: 1;
+        }
+        
+        #history-message {
+            margin-top: 10px;
+            font-style: italic;
+            color: #777;
+        }
+        /* 添加到現有 CSS 中 */
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.logout-button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: auto;
+}
+
+.logout-button:hover {
+    background-color: #c0392b;
+}
+
+#welcome-message {
+    text-align: left;
+    color: #4a90e2;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+/* 響應式設計調整 */
+@media (max-width: 480px) {
+    .header-section {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+    
+    .logout-button {
+        width: 100%;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div id="login-container" class="container">
+        <h1>配送資訊登錄系統</h1>
+        <div class="form-group">
+            <label for="username">帳號</label>
+            <input type="text" id="username" placeholder="請輸入帳號">
+        </div>
+        <div class="form-group">
+            <label for="password">密碼</label>
+            <input type="password" id="password" placeholder="請輸入密碼">
+        </div>
+        <button id="login-btn">登入</button>
+        <p id="login-error" class="error-message"></p>
+    </div>
+
+    <div id="delivery-container" class="container hidden">
+        <div class="header-section">
+        <div id="welcome-message"></div>
+        <button id="logout-btn" class="logout-button">登出</button>
+    </div>
+        
+        <div class="nav-tabs">
+            <button id="tab-form" class="active">配送登錄</button>
+            <button id="tab-history">歷史記錄</button>
+        </div>
+        
+        <div class="tab-content">
+            <div id="form-content" class="active">
+                <h1>配送資訊登錄</h1>
+                
+                <div class="form-group">
+                    <label for="delivery-location">配送點簡稱</label>
+                    <input type="text" id="delivery-location" list="delivery-locations" placeholder="請選擇或輸入關鍵字搜尋">
+                    <datalist id="delivery-locations"></datalist>
+                </div>
+                
+                <div class="form-group">
+                    <label for="vehicle-type">載具簡稱</label>
+                    <input type="text" id="vehicle-type" list="vehicle-types" placeholder="請選擇或輸入關鍵字搜尋">
+                    <datalist id="vehicle-types"></datalist>
+                </div>
+                
+                <div class="form-group">
+                    <label for="product-load">【商品載具/棧板】上車載具</label>
+                    <input type="number" id="product-load" pattern="[0-9]*" inputmode="numeric" placeholder="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="product-unload">【商品載具/棧板】下車載具</label>
+                    <input type="number" id="product-unload" pattern="[0-9]*" inputmode="numeric" placeholder="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="empty-load">【空籃/空桶】上車載具</label>
+                    <input type="number" id="empty-load" pattern="[0-9]*" inputmode="numeric" placeholder="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="empty-unload">【空籃/空桶】下車載具</label>
+                    <input type="number" id="empty-unload" pattern="[0-9]*" inputmode="numeric" placeholder="0">
+                </div>
+                
+                <div class="button-group">
+                    <button id="submit-btn">送出</button>
+                    <button id="reset-btn">重置</button>
+                </div>
+                
+                <p id="submit-message" class="message"></p>
+            </div>
+            
+            <div id="history-content">
+                <h1>歷史配送記錄</h1>
+                
+                <div class="date-filter">
+                    <label for="start-date">開始日期:</label>
+                    <input type="date" id="start-date">
+                    <label for="end-date">結束日期:</label>
+                    <input type="date" id="end-date">
+                    <button id="filter-btn" style="width: auto; padding: 8px 12px;">搜尋</button>
+                </div>
+                
+                <div class="history-container">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>配送日期</th>
+                                <th>配送點</th>
+                                <th>載具</th>
+                                <th>商品上車</th>
+                                <th>商品下車</th>
+                                <th>空籃上車</th>
+                                <th>空籃下車</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-data">
+                            <!-- 歷史記錄將在此動態載入 -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <p id="history-message"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全域變數
+        let userData = null;
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYcpORJABRyT5RZnTP7WjxRF7D3yo6iSolYEtIojH8scuypquJFKKW46jpUyVYuGps/exec';
+
+        // 頁面載入完成後執行
+        document.addEventListener('DOMContentLoaded', () => {
+            // 登入按鈕事件
+            document.getElementById('login-btn').addEventListener('click', handleLogin);
+
+            // 登出按鈕事件
+            document.getElementById('logout-btn').addEventListener('click', handleLogout);
+            
+            // 送出按鈕事件
+            document.getElementById('submit-btn').addEventListener('click', handleSubmit);
+            
+            // 重置按鈕事件
+            document.getElementById('reset-btn').addEventListener('click', resetForm);
+            
+            // 數字輸入框設定
+            setupNumericInputs();
+            
+            // 標籤切換事件
+            document.getElementById('tab-form').addEventListener('click', () => switchTab('form'));
+            document.getElementById('tab-history').addEventListener('click', () => switchTab('history'));
+            
+            // 歷史記錄搜尋按鈕事件
+            document.getElementById('filter-btn').addEventListener('click', loadHistoryData);
+            
+            // 設定今天的日期為結束日期的預設值
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('end-date').value = formattedDate;
+            
+            // 設定一週前的日期為開始日期的預設值
+            const lastWeek = new Date();
+            lastWeek.setDate(today.getDate() - 7);
+            document.getElementById('start-date').value = lastWeek.toISOString().split('T')[0];
+        });
+
+        // 處理登入
+        async function handleLogin() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorElement = document.getElementById('login-error');
+            
+            if (!username || !password) {
+                errorElement.textContent = '請輸入帳號和密碼';
+                return;
+            }
+            
+            errorElement.textContent = '登入中...';
+            
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    userData = data.user;
+                    showDeliveryForm();
+                    loadDropdownData();
+                } else {
+                    errorElement.textContent = '帳號或密碼錯誤';
+                }
+            } catch (error) {
+                console.error('登入錯誤:', error);
+                errorElement.textContent = '登入失敗，請稍後再試';
+            }
+        }
+
+        // 顯示配送表單
+        function showDeliveryForm() {
+            document.getElementById('login-container').classList.add('hidden');
+            document.getElementById('delivery-container').classList.remove('hidden');
+            document.getElementById('welcome-message').textContent = `歡迎：${userData.name}`;
+        }
+
+        // 載入下拉選單資料
+        async function loadDropdownData() {
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=getDropdownData`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    populateDropdown('delivery-locations', data.locations);
+                    populateDropdown('vehicle-types', data.vehicles);
+                } else {
+                    console.error('載入下拉選單資料失敗:', data.message);
+                }
+            } catch (error) {
+                console.error('載入下拉選單錯誤:', error);
+            }
+        }
+
+        // 填充下拉選單
+        function populateDropdown(listId, options) {
+            const datalist = document.getElementById(listId);
+            datalist.innerHTML = '';
+            
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option;
+                datalist.appendChild(optionElement);
+            });
+        }
+
+        // 設定數字輸入框
+        function setupNumericInputs() {
+            const numericInputs = [
+                'product-load',
+                'product-unload',
+                'empty-load',
+                'empty-unload'
+            ];
+            
+            numericInputs.forEach(id => {
+                const input = document.getElementById(id);
+                input.addEventListener('focus', () => {
+                    input.setAttribute('inputmode', 'numeric');
+                });
+            });
+        }
+
+        // 處理表單提交
+        async function handleSubmit() {
+            const deliveryLocation = document.getElementById('delivery-location').value.trim();
+            const vehicleType = document.getElementById('vehicle-type').value.trim();
+            const productLoad = document.getElementById('product-load').value.trim();
+            const productUnload = document.getElementById('product-unload').value.trim();
+            const emptyLoad = document.getElementById('empty-load').value.trim();
+            const emptyUnload = document.getElementById('empty-unload').value.trim();
+            
+            const messageElement = document.getElementById('submit-message');
+            
+            // 驗證必填欄位
+            if (!deliveryLocation || !vehicleType) {
+                messageElement.textContent = '請填寫配送點和載具簡稱';
+                messageElement.className = 'error-message';
+                return;
+            }
+            
+            // 準備提交資料
+            const formData = {
+                action: 'submitData',
+                driverName: userData.name,
+                deliveryLocation,
+                vehicleType,
+                productLoad: productLoad || '0',
+                productUnload: productUnload || '0',
+                emptyLoad: emptyLoad || '0',
+                emptyUnload: emptyUnload || '0'
+            };
+            
+            messageElement.textContent = '資料提交中...';
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    messageElement.textContent = '資料已成功送出！';
+                    messageElement.className = 'message';
+                    resetForm();
+                } else {
+                    messageElement.textContent = `提交失敗：${data.message}`;
+                    messageElement.className = 'error-message';
+                }
+            } catch (error) {
+                console.error('提交錯誤:', error);
+                messageElement.textContent = '提交失敗，請稍後再試';
+                messageElement.className = 'error-message';
+            }
+        }
+
+        // 重置表單
+        function resetForm() {
+            document.getElementById('delivery-location').value = '';
+            document.getElementById('vehicle-type').value = '';
+            document.getElementById('product-load').value = '';
+            document.getElementById('product-unload').value = '';
+            document.getElementById('empty-load').value = '';
+            document.getElementById('empty-unload').value = '';
+            document.getElementById('submit-message').textContent = '';
+        }
+        
+        // 切換標籤
+        function switchTab(tabName) {
+            // 移除所有標籤和內容的活動狀態
+            document.querySelectorAll('.nav-tabs button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab-content > div').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // 設置選中標籤和內容的活動狀態
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            document.getElementById(`${tabName}-content`).classList.add('active');
+            
+            // 如果切換到歷史記錄標籤，加載歷史數據
+            if (tabName === 'history') {
+                loadHistoryData();
+            }
+        }
+
+        // 添加載入狀態管理
+function showLoading(element, message = '處理中...') {
+  element.textContent = message;
+  element.style.opacity = '0.7';
+}
+
+function hideLoading(element) {
+  element.style.opacity = '1';
+}
+
+// 添加網路重試機制
+async function fetchWithRetry(url, options, retries = 3) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, options);
+      return response;
+    } catch (error) {
+      if (i === retries - 1) throw error;
+      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+    }
+  }
+}
+
+        // 前端表單驗證
+function validateForm() {
+  const deliveryLocation = document.getElementById('delivery-location').value.trim();
+  const vehicleType = document.getElementById('vehicle-type').value.trim();
+  
+  if (!deliveryLocation || deliveryLocation.length < 2) {
+    return { valid: false, message: '配送點簡稱至少需要2個字元' };
+  }
+  
+  if (!vehicleType || vehicleType.length < 2) {
+    return { valid: false, message: '載具簡稱至少需要2個字元' };
+  }
+  
+  return { valid: true };
+}
+
+        // 瀏覽器通知
+function showNotification(title, message) {
+  if (Notification.permission === 'granted') {
+    new Notification(title, { body: message });
+  }
+}
+
+        
+        // 載入歷史記錄數據
+        async function loadHistoryData() {
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            const historyMessage = document.getElementById('history-message');
+            const historyData = document.getElementById('history-data');
+            
+            if (!startDate || !endDate) {
+                historyMessage.textContent = '請選擇開始和結束日期';
+                return;
+            }
+            
+            historyMessage.textContent = '載入中...';
+            historyData.innerHTML = '';
+            
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=getHistoryData&driverName=${encodeURIComponent(userData.name)}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    if (data.records.length === 0) {
+                        historyMessage.textContent = '所選時間範圍內無配送記錄';
+                    } else {
+                        historyMessage.textContent = `共找到 ${data.records.length} 筆記錄`;
+                        
+                        data.records.forEach(record => {
+                            const row = document.createElement('tr');
+                            
+                            // 日期
+                            const dateCell = document.createElement('td');
+                            dateCell.textContent = record.date;
+                            row.appendChild(dateCell);
+                            
+                            // 配送點
+                            const locationCell = document.createElement('td');
+                            locationCell.textContent = record.location;
+                            row.appendChild(locationCell);
+                            
+                            // 載具
+                            const vehicleCell = document.createElement('td');
+                            vehicleCell.textContent = record.vehicle;
+                            row.appendChild(vehicleCell);
+                            
+                            // 商品上車
+                            const productLoadCell = document.createElement('td');
+                            productLoadCell.textContent = record.productLoad;
+                            row.appendChild(productLoadCell);
+                            
+                            // 商品下車
+                            const productUnloadCell = document.createElement('td');
+                            productUnloadCell.textContent = record.productUnload;
+                            row.appendChild(productUnloadCell);
+                            
+                            // 空籃上車
+                            const emptyLoadCell = document.createElement('td');
+                            emptyLoadCell.textContent = record.emptyLoad;
+                            row.appendChild(emptyLoadCell);
+                            
+                            // 空籃下車
+                            const emptyUnloadCell = document.createElement('td');
+                            emptyUnloadCell.textContent = record.emptyUnload;
+                            row.appendChild(emptyUnloadCell);
+                            
+                            historyData.appendChild(row);
+                        });
+                    }
+                } else {
+                    historyMessage.textContent = `載入失敗：${data.message}`;
+                }
+            } catch (error) {
+                console.error('載入歷史記錄錯誤:', error);
+                historyMessage.textContent = '載入歷史記錄失敗，請稍後再試';
+            }
+        }
+    // 添加登出處理函數
+function handleLogout() {
+    // 顯示確認對話框
+    if (confirm('確定要登出嗎？')) {
+        // 清除用戶數據
+        userData = null;
+        
+        // 清除表單數據
+        resetForm();
+        clearHistoryData();
+        
+        // 清除登入表單
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+        document.getElementById('login-error').textContent = '';
+        
+        // 切換回登入頁面
+        showLoginForm();
+        
+        // 顯示登出成功訊息
+        const loginError = document.getElementById('login-error');
+        loginError.textContent = '已成功登出';
+        loginError.className = 'message';
+        
+        // 3秒後清除訊息
+        setTimeout(() => {
+            loginError.textContent = '';
+            loginError.className = 'error-message';
+        }, 3000);
+    }
+}
+
+// 顯示登入表單
+function showLoginForm() {
+    document.getElementById('delivery-container').classList.add('hidden');
+    document.getElementById('login-container').classList.remove('hidden');
+    
+    // 重置標籤狀態
+    switchTab('form');
+}
+
+// 清除歷史記錄數據
+function clearHistoryData() {
+    document.getElementById('history-data').innerHTML = '';
+    document.getElementById('history-message').textContent = '';
+    
+    // 重置日期篩選器
+    const today = new Date();
+    const formattedDate = today.toISOString().split('T')[0];
+    document.getElementById('end-date').value = formattedDate;
+    
+    const lastWeek = new Date();
+    lastWeek.setDate(today.getDate() - 7);
+    document.getElementById('start-date').value = lastWeek.toISOString().split('T')[0];
+}
+
+        // 自動登出功能（閒置10分鐘後自動登出）
+let inactivityTimer;
+const INACTIVITY_TIME = 10 * 60 * 1000; // 10分鐘
+
+function resetInactivityTimer() {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(() => {
+        alert('由於長時間未操作，系統將自動登出');
+        handleLogout();
+    }, INACTIVITY_TIME);
+}
+
+// 在用戶活動時重置計時器
+document.addEventListener('click', resetInactivityTimer);
+document.addEventListener('keypress', resetInactivityTimer);
+document.addEventListener('scroll', resetInactivityTimer);
+
+// 在登入成功後啟動計時器
+function showDeliveryForm() {
+    document.getElementById('login-container').classList.add('hidden');
+    document.getElementById('delivery-container').classList.remove('hidden');
+    document.getElementById('welcome-message').textContent = `歡迎：${userData.name}`;
+    
+    // 啟動閒置計時器
+    resetInactivityTimer();
+}
+
+// 在登出時清除計時器
+function handleLogout() {
+    if (confirm('確定要登出嗎？')) {
+        // 清除閒置計時器
+        clearTimeout(inactivityTimer);
+        
+        // 其餘登出邏輯...
+        userData = null;
+        resetForm();
+        clearHistoryData();
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+        document.getElementById('login-error').textContent = '';
+        showLoginForm();
+        
+        const loginError = document.getElementById('login-error');
+        loginError.textContent = '已成功登出';
+        loginError.className = 'message';
+        
+        setTimeout(() => {
+            loginError.textContent = '';
+            loginError.className = 'error-message';
+        }, 3000);
+    }
+}
+
+    </script>
+</body>
+</html>
