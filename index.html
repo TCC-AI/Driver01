@@ -204,52 +204,145 @@
             font-style: italic;
             color: #777;
         }
-        /* 添加到現有 CSS 中 */
-.header-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
-}
 
-.logout-button {
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 8px 16px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    width: auto;
-}
+        /* 修改 header-section 樣式 */
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
 
-.logout-button:hover {
-    background-color: #c0392b;
-}
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
 
-#welcome-message {
-    text-align: left;
-    color: #4a90e2;
-    font-weight: bold;
-    margin-bottom: 0;
-}
+        .header-button {
+            border: none;
+            border-radius: 5px;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: auto;
+        }
 
-/* 響應式設計調整 */
-@media (max-width: 480px) {
-    .header-section {
-        flex-direction: column;
-        gap: 10px;
-        align-items: stretch;
-    }
-    
-    .logout-button {
-        width: 100%;
-    }
-}
+        .change-password-button {
+            background-color: #f39c12;
+            color: white;
+        }
 
+        .change-password-button:hover {
+            background-color: #e67e22;
+        }
+
+        .logout-button {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .logout-button:hover {
+            background-color: #c0392b;
+        }
+
+        /* 模態框樣式 */
+        .modal {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: #333;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+        }
+
+        .modal-body {
+            padding: 20px 30px 30px;
+        }
+
+        #cancel-password-btn {
+            background-color: #95a5a6;
+        }
+
+        #cancel-password-btn:hover {
+            background-color: #7f8c8d;
+        }
+
+        #welcome-message {
+            text-align: left;
+            color: #4a90e2;
+            font-weight: bold;
+            margin-bottom: 0;
+        }
+
+        /* 響應式設計調整 */
+        @media (max-width: 480px) {
+            .header-section {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            .header-buttons {
+                width: 100%;
+            }
+            
+            .header-button {
+                flex: 1;
+            }
+            
+            .modal-content {
+                margin: 20px;
+                width: calc(100% - 40px);
+            }
+            
+            .modal-header,
+            .modal-body {
+                padding: 15px 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -269,9 +362,12 @@
 
     <div id="delivery-container" class="container hidden">
         <div class="header-section">
-        <div id="welcome-message"></div>
-        <button id="logout-btn" class="logout-button">登出</button>
-    </div>
+            <div id="welcome-message"></div>
+            <div class="header-buttons">
+                <button id="change-password-btn" class="header-button change-password-button">更改密碼</button>
+                <button id="logout-btn" class="header-button logout-button">登出</button>
+            </div>
+        </div>
         
         <div class="nav-tabs">
             <button id="tab-form" class="active">配送登錄</button>
@@ -355,12 +451,41 @@
                 <p id="history-message"></p>
             </div>
         </div>
+
+        <!-- 密碼更改模態框 -->
+        <div id="password-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>更改密碼</h2>
+                    <span id="close-modal" class="close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="current-password">目前密碼</label>
+                        <input type="password" id="current-password" placeholder="請輸入目前密碼">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-password">新密碼</label>
+                        <input type="password" id="new-password" placeholder="請輸入新密碼">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">確認新密碼</label>
+                        <input type="password" id="confirm-password" placeholder="請再次輸入新密碼">
+                    </div>
+                    <div class="button-group">
+                        <button id="save-password-btn">儲存</button>
+                        <button id="cancel-password-btn" type="button">取消</button>
+                    </div>
+                    <p id="password-message" class="message"></p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         // 全域變數
         let userData = null;
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYcpORJABRyT5RZnTP7WjxRF7D3yo6iSolYEtIojH8scuypquJFKKW46jpUyVYuGps/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5R5c_eoLFepHYbnla6Gu9S34I8-iJHGKW4JRHX_cOHUSKivv-nuJtYTAEgAi4osC1/exec';
 
         // 頁面載入完成後執行
         document.addEventListener('DOMContentLoaded', () => {
@@ -369,6 +494,21 @@
 
             // 登出按鈕事件
             document.getElementById('logout-btn').addEventListener('click', handleLogout);
+
+            // 更改密碼按鈕事件
+            document.getElementById('change-password-btn').addEventListener('click', showPasswordModal);
+            
+            // 模態框相關事件
+            document.getElementById('close-modal').addEventListener('click', hidePasswordModal);
+            document.getElementById('cancel-password-btn').addEventListener('click', hidePasswordModal);
+            document.getElementById('save-password-btn').addEventListener('click', handlePasswordChange);
+            
+            // 點擊模態框外部關閉
+            document.getElementById('password-modal').addEventListener('click', (e) => {
+                if (e.target.id === 'password-modal') {
+                    hidePasswordModal();
+                }
+            });
             
             // 送出按鈕事件
             document.getElementById('submit-btn').addEventListener('click', handleSubmit);
@@ -415,7 +555,10 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    userData = data.user;
+                    userData = {
+                        name: data.user.name,
+                        username: data.user.username
+                    };
                     showDeliveryForm();
                     loadDropdownData();
                 } else {
@@ -432,6 +575,93 @@
             document.getElementById('login-container').classList.add('hidden');
             document.getElementById('delivery-container').classList.remove('hidden');
             document.getElementById('welcome-message').textContent = `歡迎：${userData.name}`;
+            
+            // 啟動閒置計時器
+            resetInactivityTimer();
+        }
+
+        // 顯示密碼更改模態框
+        function showPasswordModal() {
+            document.getElementById('password-modal').classList.remove('hidden');
+            document.getElementById('current-password').focus();
+            
+            // 清除之前的輸入和訊息
+            document.getElementById('current-password').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            document.getElementById('password-message').textContent = '';
+        }
+
+        // 隱藏密碼更改模態框
+        function hidePasswordModal() {
+            document.getElementById('password-modal').classList.add('hidden');
+        }
+
+        // 處理密碼更改
+        async function handlePasswordChange() {
+            const currentPassword = document.getElementById('current-password').value.trim();
+            const newPassword = document.getElementById('new-password').value.trim();
+            const confirmPassword = document.getElementById('confirm-password').value.trim();
+            const messageElement = document.getElementById('password-message');
+            
+            // 驗證輸入
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                messageElement.textContent = '請填寫所有欄位';
+                messageElement.className = 'error-message';
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                messageElement.textContent = '新密碼至少需要6個字元';
+                messageElement.className = 'error-message';
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                messageElement.textContent = '新密碼與確認密碼不符';
+                messageElement.className = 'error-message';
+                return;
+            }
+            
+            if (currentPassword === newPassword) {
+                messageElement.textContent = '新密碼不能與目前密碼相同';
+                messageElement.className = 'error-message';
+                return;
+            }
+            
+            messageElement.textContent = '密碼更新中...';
+            messageElement.className = 'message';
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'resetPassword',
+                        username: userData.username,
+                        currentPassword: currentPassword,
+                        newPassword: newPassword
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    messageElement.textContent = '密碼已成功更新！';
+                    messageElement.className = 'message';
+                    
+                    // 2秒後關閉模態框
+                    setTimeout(() => {
+                        hidePasswordModal();
+                    }, 2000);
+                } else {
+                    messageElement.textContent = data.message || '密碼更新失敗';
+                    messageElement.className = 'error-message';
+                }
+            } catch (error) {
+                console.error('密碼更新錯誤:', error);
+                messageElement.textContent = '密碼更新失敗，請稍後再試';
+                messageElement.className = 'error-message';
+            }
         }
 
         // 載入下拉選單資料
@@ -566,53 +796,6 @@
                 loadHistoryData();
             }
         }
-
-        // 添加載入狀態管理
-function showLoading(element, message = '處理中...') {
-  element.textContent = message;
-  element.style.opacity = '0.7';
-}
-
-function hideLoading(element) {
-  element.style.opacity = '1';
-}
-
-// 添加網路重試機制
-async function fetchWithRetry(url, options, retries = 3) {
-  for (let i = 0; i < retries; i++) {
-    try {
-      const response = await fetch(url, options);
-      return response;
-    } catch (error) {
-      if (i === retries - 1) throw error;
-      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
-    }
-  }
-}
-
-        // 前端表單驗證
-function validateForm() {
-  const deliveryLocation = document.getElementById('delivery-location').value.trim();
-  const vehicleType = document.getElementById('vehicle-type').value.trim();
-  
-  if (!deliveryLocation || deliveryLocation.length < 2) {
-    return { valid: false, message: '配送點簡稱至少需要2個字元' };
-  }
-  
-  if (!vehicleType || vehicleType.length < 2) {
-    return { valid: false, message: '載具簡稱至少需要2個字元' };
-  }
-  
-  return { valid: true };
-}
-
-        // 瀏覽器通知
-function showNotification(title, message) {
-  if (Notification.permission === 'granted') {
-    new Notification(title, { body: message });
-  }
-}
-
         
         // 載入歷史記錄數據
         async function loadHistoryData() {
@@ -675,7 +858,7 @@ function showNotification(title, message) {
                             // 空籃下車
                             const emptyUnloadCell = document.createElement('td');
                             emptyUnloadCell.textContent = record.emptyUnload;
-                            row.appendChild(emptyUnloadCell);
+                                                        row.appendChild(emptyUnloadCell);
                             
                             historyData.appendChild(row);
                         });
@@ -688,115 +871,83 @@ function showNotification(title, message) {
                 historyMessage.textContent = '載入歷史記錄失敗，請稍後再試';
             }
         }
-    // 添加登出處理函數
-function handleLogout() {
-    // 顯示確認對話框
-    if (confirm('確定要登出嗎？')) {
-        // 清除用戶數據
-        userData = null;
-        
-        // 清除表單數據
-        resetForm();
-        clearHistoryData();
-        
-        // 清除登入表單
-        document.getElementById('username').value = '';
-        document.getElementById('password').value = '';
-        document.getElementById('login-error').textContent = '';
-        
-        // 切換回登入頁面
-        showLoginForm();
-        
-        // 顯示登出成功訊息
-        const loginError = document.getElementById('login-error');
-        loginError.textContent = '已成功登出';
-        loginError.className = 'message';
-        
-        // 3秒後清除訊息
-        setTimeout(() => {
-            loginError.textContent = '';
-            loginError.className = 'error-message';
-        }, 3000);
-    }
-}
 
-// 顯示登入表單
-function showLoginForm() {
-    document.getElementById('delivery-container').classList.add('hidden');
-    document.getElementById('login-container').classList.remove('hidden');
-    
-    // 重置標籤狀態
-    switchTab('form');
-}
+        // 添加登出處理函數
+        function handleLogout() {
+            // 顯示確認對話框
+            if (confirm('確定要登出嗎？')) {
+                // 清除閒置計時器
+                clearTimeout(inactivityTimer);
+                
+                // 清除用戶數據
+                userData = null;
+                
+                // 清除表單數據
+                resetForm();
+                clearHistoryData();
+                
+                // 清除登入表單
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                document.getElementById('login-error').textContent = '';
+                
+                // 切換回登入頁面
+                showLoginForm();
+                
+                // 顯示登出成功訊息
+                const loginError = document.getElementById('login-error');
+                loginError.textContent = '已成功登出';
+                loginError.className = 'message';
+                
+                // 3秒後清除訊息
+                setTimeout(() => {
+                    loginError.textContent = '';
+                    loginError.className = 'error-message';
+                }, 3000);
+            }
+        }
 
-// 清除歷史記錄數據
-function clearHistoryData() {
-    document.getElementById('history-data').innerHTML = '';
-    document.getElementById('history-message').textContent = '';
-    
-    // 重置日期篩選器
-    const today = new Date();
-    const formattedDate = today.toISOString().split('T')[0];
-    document.getElementById('end-date').value = formattedDate;
-    
-    const lastWeek = new Date();
-    lastWeek.setDate(today.getDate() - 7);
-    document.getElementById('start-date').value = lastWeek.toISOString().split('T')[0];
-}
+        // 顯示登入表單
+        function showLoginForm() {
+            document.getElementById('delivery-container').classList.add('hidden');
+            document.getElementById('login-container').classList.remove('hidden');
+            
+            // 重置標籤狀態
+            switchTab('form');
+        }
+
+        // 清除歷史記錄數據
+        function clearHistoryData() {
+            document.getElementById('history-data').innerHTML = '';
+            document.getElementById('history-message').textContent = '';
+            
+            // 重置日期篩選器
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('end-date').value = formattedDate;
+            
+            const lastWeek = new Date();
+            lastWeek.setDate(today.getDate() - 7);
+            document.getElementById('start-date').value = lastWeek.toISOString().split('T')[0];
+        }
 
         // 自動登出功能（閒置10分鐘後自動登出）
-let inactivityTimer;
-const INACTIVITY_TIME = 10 * 60 * 1000; // 10分鐘
+        let inactivityTimer;
+        const INACTIVITY_TIME = 10 * 60 * 1000; // 10分鐘
 
-function resetInactivityTimer() {
-    clearTimeout(inactivityTimer);
-    inactivityTimer = setTimeout(() => {
-        alert('由於長時間未操作，系統將自動登出');
-        handleLogout();
-    }, INACTIVITY_TIME);
-}
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                alert('由於長時間未操作，系統將自動登出');
+                handleLogout();
+            }, INACTIVITY_TIME);
+        }
 
-// 在用戶活動時重置計時器
-document.addEventListener('click', resetInactivityTimer);
-document.addEventListener('keypress', resetInactivityTimer);
-document.addEventListener('scroll', resetInactivityTimer);
-
-// 在登入成功後啟動計時器
-function showDeliveryForm() {
-    document.getElementById('login-container').classList.add('hidden');
-    document.getElementById('delivery-container').classList.remove('hidden');
-    document.getElementById('welcome-message').textContent = `歡迎：${userData.name}`;
-    
-    // 啟動閒置計時器
-    resetInactivityTimer();
-}
-
-// 在登出時清除計時器
-function handleLogout() {
-    if (confirm('確定要登出嗎？')) {
-        // 清除閒置計時器
-        clearTimeout(inactivityTimer);
-        
-        // 其餘登出邏輯...
-        userData = null;
-        resetForm();
-        clearHistoryData();
-        document.getElementById('username').value = '';
-        document.getElementById('password').value = '';
-        document.getElementById('login-error').textContent = '';
-        showLoginForm();
-        
-        const loginError = document.getElementById('login-error');
-        loginError.textContent = '已成功登出';
-        loginError.className = 'message';
-        
-        setTimeout(() => {
-            loginError.textContent = '';
-            loginError.className = 'error-message';
-        }, 3000);
-    }
-}
-
+        // 在用戶活動時重置計時器
+        document.addEventListener('click', resetInactivityTimer);
+        document.addEventListener('keypress', resetInactivityTimer);
+        document.addEventListener('scroll', resetInactivityTimer);
     </script>
 </body>
 </html>
+
