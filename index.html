@@ -454,26 +454,6 @@
   margin: 0 auto 15px auto;
 }
 
-        .toast {
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%) translateY(100px);
-  background-color: #4CAF50;
-  color: white;
-  padding: 15px 25px;
-  border-radius: 5px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  opacity: 0;
-  transition: transform 0.3s, opacity 0.3s;
-  z-index: 1000;
-}
-
-.toast.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
 
 /* 響應式調整 */
 @media (max-width: 600px) {
@@ -1569,41 +1549,6 @@
                 }, 3000);
             }
         }
-
-        function showToast(message) {
-  const toast = document.createElement('div');
-  toast.className = 'toast';
-  toast.textContent = message;
-  
-  document.body.appendChild(toast);
-  
-  // 顯示Toast
-  setTimeout(() => {
-    toast.classList.add('show');
-  }, 10);
-  
-  // 3秒後自動消失
-  setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => {
-      toast.remove();
-    }, 300);
-  }, 3000);
-}
-
-// 表單提交成功後調用
-document.getElementById('deliveryForm').addEventListener('submit', function(event) {
-  event.preventDefault();
-  
-  // 假設這裡有表單提交的代碼
-  
-  // 提交成功後顯示Toast
-  showToast('資料登載成功！');
-  
-  // 可選：重置表單
-  this.reset();
-});
-
 
         // 顯示登入表單
         function showLoginForm() {
