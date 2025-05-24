@@ -317,32 +317,33 @@
             margin-bottom: 0;
         }
 
-        /* 響應式設計調整 */
-        @media (max-width: 480px) {
-            .header-section {
-                flex-direction: column;
-                gap: 15px;
-                align-items: stretch;
-            }
-            
-            .header-buttons {
-                width: 100%;
-            }
-            
-            .header-button {
-                flex: 1;
-            }
-            
-            .modal-content {
-                margin: 20px;
-                width: calc(100% - 40px);
-            }
-            
-            .modal-header,
-            .modal-body {
-                padding: 15px 20px;
-            }
-            /* 確保模態框初始狀態是隱藏的 */
+@media (max-width: 480px) {
+    .header-section {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    .header-buttons {
+        width: 100%;
+    }
+    
+    .header-button {
+        flex: 1;
+    }
+    
+    .modal-content {
+        margin: 20px;
+        width: calc(100% - 40px);
+    }
+    
+    .modal-header,
+    .modal-body {
+        padding: 15px 20px;
+    }
+}
+
+/* 確保模態框初始狀態是隱藏的 */
 .modal.hidden {
     display: none !important;
 }
@@ -353,7 +354,8 @@ button:disabled {
     cursor: not-allowed;
 }
 
-        }
+
+        
     </style>
 </head>
 <body>
@@ -498,28 +500,57 @@ button:disabled {
         let userData = null;
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5R5c_eoLFepHYbnla6Gu9S34I8-iJHGKW4JRHX_cOHUSKivv-nuJtYTAEgAi4osC1/exec';
 
-        // 頁面載入完成後執行
-        document.addEventListener('DOMContentLoaded', () => {
-            // 登入按鈕事件
-            document.getElementById('login-btn').addEventListener('click', handleLogin);
+document.addEventListener('DOMContentLoaded', () => {
+    // 登入按鈕事件
+    document.getElementById('login-btn').addEventListener('click', handleLogin);
+    
+    // 登入表單 Enter 鍵支持
+    document.getElementById('password').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handleLogin();
+        }
+    });
 
-            // 登出按鈕事件
-            document.getElementById('logout-btn').addEventListener('click', handleLogout);
+    // 登出按鈕事件
+    document.getElementById('logout-btn').addEventListener('click', handleLogout);
 
-            // 更改密碼按鈕事件
-            document.getElementById('change-password-btn').addEventListener('click', showPasswordModal);
-            
-            // 模態框相關事件
-            document.getElementById('close-modal').addEventListener('click', hidePasswordModal);
-            document.getElementById('cancel-password-btn').addEventListener('click', hidePasswordModal);
-            document.getElementById('save-password-btn').addEventListener('click', handlePasswordChange);
-            
-            // 點擊模態框外部關閉
-            document.getElementById('password-modal').addEventListener('click', (e) => {
-                if (e.target.id === 'password-modal') {
-                    hidePasswordModal();
-                }
-            });
+    // 更改密碼按鈕事件 - 確保只綁定一次
+    document.getElementById('change-password-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        showPasswordModal();
+    });
+    
+    // 模態框相關事件
+    document.getElementById('close-modal').addEventListener('click', (e) => {
+        e.preventDefault();
+        hidePasswordModal();
+    });
+    
+    document.getElementById('cancel-password-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        hidePasswordModal();
+    });
+    
+    document.getElementById('save-password-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        handlePasswordChange();
+    });
+    
+    // 點擊模態框外部關閉
+    document.getElementById('password-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'password-modal') {
+            hidePasswordModal();
+        }
+    });
+    
+    // 密碼輸入框 Enter 鍵支持
+    document.getElementById('confirm-password').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handlePasswordChange();
+        }
+    });
+
             
             // 送出按鈕事件
             document.getElementById('submit-btn').addEventListener('click', handleSubmit);
@@ -610,11 +641,32 @@ function showPasswordModal() {
     // 顯示模態框
     document.getElementById('password-modal').classList.remove('hidden');
     
+    // 添加鍵盤支持
+    addPasswordModalKeyboardSupport();
+    
     // 聚焦到第一個輸入框
     setTimeout(() => {
         document.getElementById('current-password').focus();
     }, 100);
 }
+
+
+// 添加鍵盤事件支持
+function addPasswordModalKeyboardSupport() {
+    // 為所有密碼輸入框添加 Enter 鍵支持
+    ['current-password', 'new-password', 'confirm-password'].forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handlePasswordChange();
+                }
+            });
+        }
+    });
+}
+
 
 
 function hidePasswordModal() {
@@ -710,11 +762,14 @@ async function handlePasswordChange() {
         console.error('密碼更新錯誤:', error);
         messageElement.textContent = '密碼更新失敗，請稍後再試';
         messageElement.className = 'error-message';
-    } finally {
-        // 恢復按鈕狀態
+} finally {
+    // 延遲恢復按鈕狀態，避免立即重新觸發
+    setTimeout(() => {
         saveButton.disabled = false;
         saveButton.textContent = originalText;
-    }
+    }, 100);
+}
+
 }
 
 
