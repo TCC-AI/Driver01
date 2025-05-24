@@ -773,7 +773,7 @@
     <!-- 登入頁面 -->
     <div id="login-container" class="container">
          <img src="01.png" alt="標題圖示" class="title-icon">
-        <h1>配送資訊登錄系統<br>(輔助)</h1>
+        <h1>配送資訊登錄系統</h1>
         <div class="form-group">
             <label for="username">帳號</label>
             <input type="text" id="username" placeholder="請輸入帳號">
@@ -992,20 +992,15 @@
             // 歷史記錄搜尋按鈕事件
             document.getElementById('filter-btn').addEventListener('click', loadHistoryData);
             
-            // 獲取當前日期
-const today = new Date();
-
-// 設定當月1號為開始日期
-const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-const formattedStartDate = firstDayOfMonth.toISOString().split('T')[0];
-document.getElementById('start-date').value = formattedStartDate;
-
-// 設定當月最後一天為結束日期
-// 將月份+1，日期設為0，會得到上個月的最後一天，也就是當月的最後一天
-const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-const formattedEndDate = lastDayOfMonth.toISOString().split('T')[0];
-document.getElementById('end-date').value = formattedEndDate;
-
+            // 設定今天的日期為結束日期的預設值
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('end-date').value = formattedDate;
+            
+            // 設定一週前的日期為開始日期的預設值
+            const lastWeek = new Date();
+            lastWeek.setDate(today.getDate() - 7);
+            document.getElementById('start-date').value = lastWeek.toISOString().split('T')[0];
         });
 
         // 處理登入
