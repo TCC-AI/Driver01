@@ -726,64 +726,89 @@ async function handlePasswordChange() {
     messageElement.className = 'message';
     
     try {
-        // 使用 GET 請求避免 CORS 問題
-        const url = `${SCRIPT_URL}?action=resetPassword&username=${encodeURIComponent(userData.username)}&currentPassword=${encodeURIComponent(currentPassword)}&newPassword=${encodeURIComponent(newPassword)}`;
+        // 使用動態 script 標籤避免 CORS（JSONP 方式）
+        const callbackName = 'passwordChangeCallback_' + Date.now();
         
-        console.log('發送密碼更新請求 (GET)...');
-        
-        const response = await fetch(url, {
-            method: 'GET',
-            mode: 'cors',
-            credentials: 'omit'
-        });
-        
-        console.log('API 回應狀態:', response.status);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        const data = await response.json();
-        console.log('API 回應資料:', data);
-        
-        if (data.success) {
-            messageElement.textContent = '密碼已成功更新！';
-            messageElement.className = 'message';
+        // 創建全域回調函數
+        window[callbackName] = function(data) {
+            console.log('密碼更新回應:', data);
             
-            // 2秒後關閉模態框
+            if (data.success) {
+                messageElement.textContent = '密碼已成功更新！';
+                messageElement.className = 'message';
+                
+                setTimeout(() => {
+                    hidePasswordModal();
+                    document.getElementById('current-password').value = '';
+                    document.getElementById('new-password').value = '';
+                    document.getElementById('confirm-password').value = '';
+                    messageElement.textContent = '';
+                }, 2000);
+            } else {
+                messageElement.textContent = data.message || '密碼更新失敗，請檢查目前密碼是否正確';
+                messageElement.className = 'error-message';
+            }
+            
+            // 清理
+            document.head.removeChild(script);
+            delete window[callbackName];
+            
+            // 恢復按鈕狀態
             setTimeout(() => {
-                hidePasswordModal();
-                // 清空表單
-                document.getElementById('current-password').value = '';
-                document.getElementById('new-password').value = '';
-                document.getElementById('confirm-password').value = '';
-                messageElement.textContent = '';
-            }, 2000);
-        } else {
-            console.error('密碼更新失敗:', data);
-            messageElement.textContent = data.message || '密碼更新失敗，請檢查目前密碼是否正確';
+                saveButton.disabled = false;
+                saveButton.textContent = originalText;
+            }, 100);
+        };
+        
+        // 創建 script 標籤
+        const script = document.createElement('script');
+        const url = `${SCRIPT_URL}?action=resetPassword&username=${encodeURIComponent(userData.username)}&currentPassword=${encodeURIComponent(currentPassword)}&newPassword=${encodeURIComponent(newPassword)}&callback=${callbackName}`;
+        
+        script.src = url;
+        script.onerror = function() {
+            messageElement.textContent = '網路連線失敗，請稍後重試';
             messageElement.className = 'error-message';
-        }
+            
+            // 清理
+            document.head.removeChild(script);
+            delete window[callbackName];
+            
+            setTimeout(() => {
+                saveButton.disabled = false;
+                saveButton.textContent = originalText;
+            }, 100);
+        };
+        
+        // 設置超時
+        setTimeout(() => {
+            if (window[callbackName]) {
+                messageElement.textContent = '請求超時，請稍後重試';
+                messageElement.className = 'error-message';
+                
+                document.head.removeChild(script);
+                delete window[callbackName];
+                
+                setTimeout(() => {
+                    saveButton.disabled = false;
+                    saveButton.textContent = originalText;
+                }, 100);
+            }
+        }, 10000); // 10秒超時
+        
+        document.head.appendChild(script);
+        
     } catch (error) {
         console.error('密碼更新錯誤:', error);
-        
-        // 根據錯誤類型提供不同的錯誤訊息
-        if (error.name === 'TypeError' && error.message.includes('fetch')) {
-            messageElement.textContent = '網路連線問題，請檢查網路後重試';
-        } else if (error.message.includes('CORS')) {
-            messageElement.textContent = '跨域請求被阻擋，請聯繫系統管理員';
-        } else {
-            messageElement.textContent = `密碼更新失敗：${error.message}`;
-        }
+        messageElement.textContent = `密碼更新失敗：${error.message}`;
         messageElement.className = 'error-message';
-    } finally {
-        // 延遲恢復按鈕狀態
+        
         setTimeout(() => {
             saveButton.disabled = false;
             saveButton.textContent = originalText;
         }, 100);
     }
 }
+
 
 
 // 添加到 JavaScript 中任何位置
