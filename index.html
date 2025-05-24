@@ -992,15 +992,20 @@
             // 歷史記錄搜尋按鈕事件
             document.getElementById('filter-btn').addEventListener('click', loadHistoryData);
             
-            // 設定今天的日期為結束日期的預設值
-            const today = new Date();
-            const formattedDate = today.toISOString().split('T')[0];
-            document.getElementById('end-date').value = formattedDate;
-            
-            // 設定一週前的日期為開始日期的預設值
-            const lastWeek = new Date();
-            lastWeek.setDate(today.getDate() - 7);
-            document.getElementById('start-date').value = lastWeek.toISOString().split('T')[0];
+            // 獲取當前日期
+const today = new Date();
+
+// 設定當月1號為開始日期
+const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+const formattedStartDate = firstDayOfMonth.toISOString().split('T')[0];
+document.getElementById('start-date').value = formattedStartDate;
+
+// 設定當月最後一天為結束日期
+// 將月份+1，日期設為0，會得到上個月的最後一天，也就是當月的最後一天
+const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+const formattedEndDate = lastDayOfMonth.toISOString().split('T')[0];
+document.getElementById('end-date').value = formattedEndDate;
+
         });
 
         // 處理登入
