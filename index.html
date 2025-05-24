@@ -9,77 +9,188 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: "微軟正黑體", sans-serif;
+            font-family: "微軟正黑體", "Segoe UI", Roboto, sans-serif;
         }
 
         body {
-            background-color: #f5f5f5;
+            /* 非對稱綠藍漸層背景 */
+            background: linear-gradient(135deg, 
+                #667eea 0%, 
+                #764ba2 25%, 
+                #43cea2 50%, 
+                #185a9d 75%, 
+                #43cea2 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 動態背景動畫 */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 背景裝飾元素 */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: float 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% { transform: translateX(-50px) translateY(-50px); }
+            100% { transform: translateX(50px) translateY(50px); }
         }
 
         .container {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.15),
+                0 15px 35px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            padding: 40px;
             width: 100%;
-            max-width: 500px;
+            max-width: 520px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 35px 70px rgba(0, 0, 0, 0.2),
+                0 20px 45px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
         }
 
         h1 {
-            color: #333;
+            background: linear-gradient(135deg, #667eea, #43cea2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
+            font-size: 28px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            position: relative;
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #555;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 15px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 16px 20px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 15px;
             font-size: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
         }
 
         input:focus {
             outline: none;
-            border-color: #4a90e2;
-            box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
+            border-color: #43cea2;
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 
+                0 8px 25px rgba(67, 206, 162, 0.15),
+                0 0 0 3px rgba(67, 206, 162, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            transform: translateY(-2px);
         }
 
+        input::placeholder {
+            color: rgba(44, 62, 80, 0.5);
+        }
+
+        /* 質感按鈕設計 */
         button {
-            background-color: #4a90e2;
+            background: linear-gradient(135deg, #667eea 0%, #43cea2 100%);
             color: white;
             border: none;
-            border-radius: 5px;
-            padding: 12px 20px;
+            border-radius: 18px;
+            padding: 16px 24px;
             font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             width: 100%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 8px 25px rgba(102, 126, 234, 0.3),
+                0 4px 12px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
         }
 
         button:hover {
-            background-color: #3a7bc8;
+            transform: translateY(-3px);
+            box-shadow: 
+                0 12px 35px rgba(102, 126, 234, 0.4),
+                0 6px 18px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:active {
+            transform: translateY(-1px);
+            box-shadow: 
+                0 6px 20px rgba(102, 126, 234, 0.3),
+                0 3px 10px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
         .button-group {
             display: flex;
-            gap: 15px;
+            gap: 20px;
         }
 
         .button-group button {
@@ -87,23 +198,41 @@
         }
 
         #reset-btn {
-            background-color: #e74c3c;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            box-shadow: 
+                0 8px 25px rgba(255, 107, 107, 0.3),
+                0 4px 12px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
         #reset-btn:hover {
-            background-color: #c0392b;
+            box-shadow: 
+                0 12px 35px rgba(255, 107, 107, 0.4),
+                0 6px 18px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        #reset-btn:active {
+            box-shadow: 
+                0 6px 20px rgba(255, 107, 107, 0.3),
+                0 3px 10px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
         .error-message {
             color: #e74c3c;
-            margin-top: 15px;
+            margin-top: 20px;
             text-align: center;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .message {
-            color: #2ecc71;
-            margin-top: 15px;
+            color: #27ae60;
+            margin-top: 20px;
             text-align: center;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .hidden {
@@ -111,10 +240,14 @@
         }
 
         #welcome-message {
-            text-align: right;
-            color: #4a90e2;
-            font-weight: bold;
-            margin-bottom: 10px;
+            text-align: left;
+            background: linear-gradient(135deg, #667eea, #43cea2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            margin-bottom: 0;
+            font-size: 18px;
         }
 
         input[type="number"] {
@@ -127,28 +260,56 @@
             margin: 0;
         }
         
-        /* 歷史記錄樣式 */
+        /* 標籤頁樣式 */
         .nav-tabs {
             display: flex;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #ddd;
+            margin-bottom: 25px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+            border-radius: 15px 15px 0 0;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.5);
         }
         
         .nav-tabs button {
-            background-color: transparent;
-            color: #555;
+            background: transparent;
+            color: #2c3e50;
             border: none;
             border-bottom: 3px solid transparent;
-            padding: 10px 15px;
+            padding: 15px 20px;
             font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             width: auto;
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-tabs button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(67, 206, 162, 0.1));
+            transition: left 0.3s ease;
+        }
+
+        .nav-tabs button:hover::before {
+            left: 0;
         }
         
         .nav-tabs button.active {
-            color: #4a90e2;
-            border-bottom-color: #4a90e2;
+            background: linear-gradient(135deg, #667eea, #43cea2);
+            color: white;
+            border-bottom-color: #43cea2;
+            box-shadow: 0 4px 15px rgba(67, 206, 162, 0.3);
+        }
+
+        .nav-tabs button.active::before {
+            display: none;
         }
         
         .tab-content > div {
@@ -163,36 +324,60 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
         
         .history-table th, .history-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            padding: 12px;
             text-align: left;
         }
         
         .history-table th {
-            background-color: #f2f2f2;
+            background: linear-gradient(135deg, #667eea, #43cea2);
+            color: white;
             position: sticky;
             top: 0;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .history-table tr:nth-child(even) {
+            background: rgba(67, 206, 162, 0.05);
+        }
+
+        .history-table tr:hover {
+            background: rgba(67, 206, 162, 0.1);
+            transform: scale(1.01);
+            transition: all 0.2s ease;
         }
         
         .history-container {
             max-height: 300px;
             overflow-y: auto;
             margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         
         .date-filter {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 15px;
+            margin-bottom: 20px;
             align-items: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
         
         .date-filter label {
             margin-bottom: 0;
             white-space: nowrap;
+            font-weight: 600;
+            color: #2c3e50;
         }
         
         .date-filter input {
@@ -200,52 +385,58 @@
         }
         
         #history-message {
-            margin-top: 10px;
+            margin-top: 15px;
             font-style: italic;
-            color: #777;
+            color: #7f8c8d;
+            text-align: center;
+            font-weight: 500;
         }
 
-        /* 修改 header-section 樣式 */
+        /* Header 區域樣式 */
         .header-section {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
         }
 
         .header-buttons {
             display: flex;
-            gap: 10px;
+            gap: 15px;
         }
 
         .header-button {
             border: none;
-            border-radius: 5px;
-            padding: 8px 16px;
+            border-radius: 12px;
+            padding: 10px 18px;
             font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             width: auto;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .change-password-button {
-            background-color: #f39c12;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
             color: white;
         }
 
         .change-password-button:hover {
-            background-color: #e67e22;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
         }
 
         .logout-button {
-            background-color: #e74c3c;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
             color: white;
         }
 
         .logout-button:hover {
-            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
         }
 
         /* 模態框樣式 */
@@ -256,109 +447,207 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
             display: flex;
             justify-content: center;
             align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .modal-content {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.2),
+                0 15px 35px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
             width: 90%;
-            max-width: 400px;
+            max-width: 450px;
             max-height: 90vh;
             overflow-y: auto;
+            animation: slideIn 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 30px 10px;
-            border-bottom: 1px solid #eee;
+            padding: 25px 35px 15px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
         }
 
         .modal-header h2 {
             margin: 0;
-            color: #333;
+            background: linear-gradient(135deg, #667eea, #43cea2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
         }
 
         .close {
-            color: #aaa;
-            font-size: 28px;
+            color: #95a5a6;
+            font-size: 32px;
             font-weight: bold;
             cursor: pointer;
             line-height: 1;
+            transition: all 0.3s ease;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .close:hover,
         .close:focus {
-            color: #000;
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+            transform: rotate(90deg);
         }
 
         .modal-body {
-            padding: 20px 30px 30px;
+            padding: 25px 35px 35px;
         }
 
         #cancel-password-btn {
-            background-color: #95a5a6;
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            box-shadow: 
+                0 8px 25px rgba(149, 165, 166, 0.3),
+                0 4px 12px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
         #cancel-password-btn:hover {
-            background-color: #7f8c8d;
+            box-shadow: 
+                0 12px 35px rgba(149, 165, 166, 0.4),
+                0 6px 18px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
-        #welcome-message {
-            text-align: left;
-            color: #4a90e2;
-            font-weight: bold;
-            margin-bottom: 0;
+        /* 響應式設計 */
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+                border-radius: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .header-section {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            .header-buttons {
+                width: 100%;
+            }
+            
+            .header-button {
+                flex: 1;
+            }
+            
+            .modal-content {
+                margin: 20px;
+                width: calc(100% - 40px);
+                border-radius: 20px;
+            }
+            
+            .modal-header,
+            .modal-body {
+                padding: 20px 25px;
+            }
+
+            .date-filter {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .date-filter input {
+                width: 100%;
+            }
         }
 
-@media (max-width: 480px) {
-    .header-section {
-        flex-direction: column;
-        gap: 15px;
-        align-items: stretch;
-    }
-    
-    .header-buttons {
-        width: 100%;
-    }
-    
-    .header-button {
-        flex: 1;
-    }
-    
-    .modal-content {
-        margin: 20px;
-        width: calc(100% - 40px);
-    }
-    
-    .modal-header,
-    .modal-body {
-        padding: 15px 20px;
-    }
-}
+        /* 確保模態框初始狀態是隱藏的 */
+        .modal.hidden {
+            display: none !important;
+        }
 
-/* 確保模態框初始狀態是隱藏的 */
-.modal.hidden {
-    display: none !important;
-}
+        /* 防止按鈕重複點擊 */
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+        }
 
-/* 防止按鈕重複點擊 */
-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
+        /* 載入動畫 */
+        .loading {
+            position: relative;
+            overflow: hidden;
+        }
 
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: loading 1.5s infinite;
+        }
 
-        
+        @keyframes loading {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* 自定義滾動條 */
+        .history-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .history-container::-webkit-scrollbar-track {
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+        }
+
+        .history-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #43cea2);
+            border-radius: 10px;
+        }
+
+        .history-container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #43cea2, #667eea);
+        }
     </style>
 </head>
 <body>
+    <!-- 登入頁面 -->
     <div id="login-container" class="container">
         <h1>配送資訊登錄系統</h1>
         <div class="form-group">
@@ -373,6 +662,7 @@ button:disabled {
         <p id="login-error" class="error-message"></p>
     </div>
 
+    <!-- 主系統頁面 -->
     <div id="delivery-container" class="container hidden">
         <div class="header-section">
             <div id="welcome-message"></div>
@@ -439,7 +729,7 @@ button:disabled {
                     <input type="date" id="start-date">
                     <label for="end-date">結束日期:</label>
                     <input type="date" id="end-date">
-                    <button id="filter-btn" style="width: auto; padding: 8px 12px;">搜尋</button>
+                    <button id="filter-btn" style="width: auto; padding: 12px 20px;">搜尋</button>
                 </div>
                 
                 <div class="history-container">
@@ -500,57 +790,56 @@ button:disabled {
         let userData = null;
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3k6fv41Q4rOuDqu2B3hByjK7p_WfNpH1mIg2-U-y65GDRkypk4L18Zx_Y-2vgFkyi/exec';
 
-document.addEventListener('DOMContentLoaded', () => {
-    // 登入按鈕事件
-    document.getElementById('login-btn').addEventListener('click', handleLogin);
-    
-    // 登入表單 Enter 鍵支持
-    document.getElementById('password').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            handleLogin();
-        }
-    });
+        document.addEventListener('DOMContentLoaded', () => {
+            // 登入按鈕事件
+            document.getElementById('login-btn').addEventListener('click', handleLogin);
+            
+            // 登入表單 Enter 鍵支持
+            document.getElementById('password').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleLogin();
+                }
+            });
 
-    // 登出按鈕事件
-    document.getElementById('logout-btn').addEventListener('click', handleLogout);
+               // 登出按鈕事件
+            document.getElementById('logout-btn').addEventListener('click', handleLogout);
 
-    // 更改密碼按鈕事件 - 確保只綁定一次
-    document.getElementById('change-password-btn').addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        showPasswordModal();
-    });
-    
-    // 模態框相關事件
-    document.getElementById('close-modal').addEventListener('click', (e) => {
-        e.preventDefault();
-        hidePasswordModal();
-    });
-    
-    document.getElementById('cancel-password-btn').addEventListener('click', (e) => {
-        e.preventDefault();
-        hidePasswordModal();
-    });
-    
-    document.getElementById('save-password-btn').addEventListener('click', (e) => {
-        e.preventDefault();
-        handlePasswordChange();
-    });
-    
-    // 點擊模態框外部關閉
-    document.getElementById('password-modal').addEventListener('click', (e) => {
-        if (e.target.id === 'password-modal') {
-            hidePasswordModal();
-        }
-    });
-    
-    // 密碼輸入框 Enter 鍵支持
-    document.getElementById('confirm-password').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            handlePasswordChange();
-        }
-    });
-
+            // 更改密碼按鈕事件 - 確保只綁定一次
+            document.getElementById('change-password-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                showPasswordModal();
+            });
+            
+            // 模態框相關事件
+            document.getElementById('close-modal').addEventListener('click', (e) => {
+                e.preventDefault();
+                hidePasswordModal();
+            });
+            
+            document.getElementById('cancel-password-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                hidePasswordModal();
+            });
+            
+            document.getElementById('save-password-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                handlePasswordChange();
+            });
+            
+            // 點擊模態框外部關閉
+            document.getElementById('password-modal').addEventListener('click', (e) => {
+                if (e.target.id === 'password-modal') {
+                    hidePasswordModal();
+                }
+            });
+            
+            // 密碼輸入框 Enter 鍵支持
+            document.getElementById('confirm-password').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handlePasswordChange();
+                }
+            });
             
             // 送出按鈕事件
             document.getElementById('submit-btn').addEventListener('click', handleSubmit);
@@ -584,13 +873,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
             const errorElement = document.getElementById('login-error');
+            const loginBtn = document.getElementById('login-btn');
             
             if (!username || !password) {
                 errorElement.textContent = '請輸入帳號和密碼';
                 return;
             }
             
-            errorElement.textContent = '登入中...';
+            // 添加載入效果
+            loginBtn.classList.add('loading');
+            loginBtn.disabled = true;
+            loginBtn.textContent = '登入中...';
+            errorElement.textContent = '';
             
             try {
                 const response = await fetch(`${SCRIPT_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
@@ -609,226 +903,230 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (error) {
                 console.error('登入錯誤:', error);
                 errorElement.textContent = '登入失敗，請稍後再試';
+            } finally {
+                // 恢復按鈕狀態
+                loginBtn.classList.remove('loading');
+                loginBtn.disabled = false;
+                loginBtn.textContent = '登入';
             }
         }
 
-function showPasswordModal() {
-    // 清除之前的輸入和訊息
-    document.getElementById('current-password').value = '';
-    document.getElementById('new-password').value = '';
-    document.getElementById('confirm-password').value = '';
-    document.getElementById('password-message').textContent = '';
-    document.getElementById('password-message').className = 'message';
-    
-    // 重置按鈕狀態
-    const saveButton = document.getElementById('save-password-btn');
-    saveButton.disabled = false;
-    saveButton.textContent = '儲存';
-    
-    // 顯示模態框
-    document.getElementById('password-modal').classList.remove('hidden');
-    
-    // 添加鍵盤支持
-    addPasswordModalKeyboardSupport();
-    
-    // 聚焦到第一個輸入框
-    setTimeout(() => {
-        document.getElementById('current-password').focus();
-    }, 100);
-}
+        function showPasswordModal() {
+            // 清除之前的輸入和訊息
+            document.getElementById('current-password').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            document.getElementById('password-message').textContent = '';
+            document.getElementById('password-message').className = 'message';
+            
+            // 重置按鈕狀態
+            const saveButton = document.getElementById('save-password-btn');
+            saveButton.disabled = false;
+            saveButton.textContent = '儲存';
+            saveButton.classList.remove('loading');
+            
+            // 顯示模態框
+            document.getElementById('password-modal').classList.remove('hidden');
+            
+            // 添加鍵盤支持
+            addPasswordModalKeyboardSupport();
+            
+            // 聚焦到第一個輸入框
+            setTimeout(() => {
+                document.getElementById('current-password').focus();
+            }, 100);
+        }
 
-
-// 添加鍵盤事件支持
-function addPasswordModalKeyboardSupport() {
-    // 為所有密碼輸入框添加 Enter 鍵支持
-    ['current-password', 'new-password', 'confirm-password'].forEach(id => {
-        const input = document.getElementById(id);
-        if (input) {
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handlePasswordChange();
+        // 添加鍵盤事件支持
+        function addPasswordModalKeyboardSupport() {
+            // 為所有密碼輸入框添加 Enter 鍵支持
+            ['current-password', 'new-password', 'confirm-password'].forEach(id => {
+                const input = document.getElementById(id);
+                if (input) {
+                    input.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            handlePasswordChange();
+                        }
+                    });
                 }
             });
         }
-    });
-}
 
-
-
-function hidePasswordModal() {
-    document.getElementById('password-modal').classList.add('hidden');
-    
-    // 清除所有輸入和訊息
-    document.getElementById('current-password').value = '';
-    document.getElementById('new-password').value = '';
-    document.getElementById('confirm-password').value = '';
-    document.getElementById('password-message').textContent = '';
-    
-    // 重置按鈕狀態
-    const saveButton = document.getElementById('save-password-btn');
-    saveButton.disabled = false;
-    saveButton.textContent = '儲存';
-}
-
-
-async function handlePasswordChange() {
-    const currentPassword = document.getElementById('current-password').value.trim();
-    const newPassword = document.getElementById('new-password').value.trim();
-    const confirmPassword = document.getElementById('confirm-password').value.trim();
-    const messageElement = document.getElementById('password-message');
-    
-    // 驗證輸入
-    if (!currentPassword || !newPassword || !confirmPassword) {
-        messageElement.textContent = '請填寫所有欄位';
-        messageElement.className = 'error-message';
-        return;
-    }
-    
-    if (newPassword.length < 6) {
-        messageElement.textContent = '新密碼至少需要6個字元';
-        messageElement.className = 'error-message';
-        return;
-    }
-    
-    if (newPassword !== confirmPassword) {
-        messageElement.textContent = '新密碼與確認密碼不符';
-        messageElement.className = 'error-message';
-        return;
-    }
-    
-    if (currentPassword === newPassword) {
-        messageElement.textContent = '新密碼不能與目前密碼相同';
-        messageElement.className = 'error-message';
-        return;
-    }
-    
-    // 禁用按鈕防止重複提交
-    const saveButton = document.getElementById('save-password-btn');
-    const originalText = saveButton.textContent;
-    saveButton.disabled = true;
-    saveButton.textContent = '更新中...';
-    
-    messageElement.textContent = '密碼更新中...';
-    messageElement.className = 'message';
-    
-    try {
-        // 使用動態 script 標籤避免 CORS（JSONP 方式）
-        const callbackName = 'passwordChangeCallback_' + Date.now();
-        
-        // 創建全域回調函數
-        window[callbackName] = function(data) {
-            console.log('密碼更新回應:', data);
+        function hidePasswordModal() {
+            document.getElementById('password-modal').classList.add('hidden');
             
-            if (data.success) {
-                messageElement.textContent = '密碼已成功更新！';
-                messageElement.className = 'message';
-                
-                setTimeout(() => {
-                    hidePasswordModal();
-                    document.getElementById('current-password').value = '';
-                    document.getElementById('new-password').value = '';
-                    document.getElementById('confirm-password').value = '';
-                    messageElement.textContent = '';
-                }, 2000);
-            } else {
-                messageElement.textContent = data.message || '密碼更新失敗，請檢查目前密碼是否正確';
+            // 清除所有輸入和訊息
+            document.getElementById('current-password').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            document.getElementById('password-message').textContent = '';
+            
+            // 重置按鈕狀態
+            const saveButton = document.getElementById('save-password-btn');
+            saveButton.disabled = false;
+            saveButton.textContent = '儲存';
+            saveButton.classList.remove('loading');
+        }
+
+        async function handlePasswordChange() {
+            const currentPassword = document.getElementById('current-password').value.trim();
+            const newPassword = document.getElementById('new-password').value.trim();
+            const confirmPassword = document.getElementById('confirm-password').value.trim();
+            const messageElement = document.getElementById('password-message');
+            
+            // 驗證輸入
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                messageElement.textContent = '請填寫所有欄位';
                 messageElement.className = 'error-message';
+                return;
             }
             
-            // 清理
-            document.head.removeChild(script);
-            delete window[callbackName];
-            
-            // 恢復按鈕狀態
-            setTimeout(() => {
-                saveButton.disabled = false;
-                saveButton.textContent = originalText;
-            }, 100);
-        };
-        
-        // 創建 script 標籤
-        const script = document.createElement('script');
-        const url = `${SCRIPT_URL}?action=resetPassword&username=${encodeURIComponent(userData.username)}&currentPassword=${encodeURIComponent(currentPassword)}&newPassword=${encodeURIComponent(newPassword)}&callback=${callbackName}`;
-        
-        script.src = url;
-        script.onerror = function() {
-            messageElement.textContent = '網路連線失敗，請稍後重試';
-            messageElement.className = 'error-message';
-            
-            // 清理
-            document.head.removeChild(script);
-            delete window[callbackName];
-            
-            setTimeout(() => {
-                saveButton.disabled = false;
-                saveButton.textContent = originalText;
-            }, 100);
-        };
-        
-        // 設置超時
-        setTimeout(() => {
-            if (window[callbackName]) {
-                messageElement.textContent = '請求超時，請稍後重試';
+            if (newPassword.length < 6) {
+                messageElement.textContent = '新密碼至少需要6個字元';
                 messageElement.className = 'error-message';
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                messageElement.textContent = '新密碼與確認密碼不符';
+                messageElement.className = 'error-message';
+                return;
+            }
+            
+            if (currentPassword === newPassword) {
+                messageElement.textContent = '新密碼不能與目前密碼相同';
+                messageElement.className = 'error-message';
+                return;
+            }
+            
+            // 禁用按鈕防止重複提交
+            const saveButton = document.getElementById('save-password-btn');
+            const originalText = saveButton.textContent;
+            saveButton.disabled = true;
+            saveButton.textContent = '更新中...';
+            saveButton.classList.add('loading');
+            
+            messageElement.textContent = '密碼更新中...';
+            messageElement.className = 'message';
+            
+            try {
+                // 使用動態 script 標籤避免 CORS（JSONP 方式）
+                const callbackName = 'passwordChangeCallback_' + Date.now();
                 
-                document.head.removeChild(script);
-                delete window[callbackName];
+                // 創建全域回調函數
+                window[callbackName] = function(data) {
+                    console.log('密碼更新回應:', data);
+                    
+                    if (data.success) {
+                        messageElement.textContent = '密碼已成功更新！';
+                        messageElement.className = 'message';
+                        
+                        setTimeout(() => {
+                            hidePasswordModal();
+                            document.getElementById('current-password').value = '';
+                            document.getElementById('new-password').value = '';
+                            document.getElementById('confirm-password').value = '';
+                            messageElement.textContent = '';
+                        }, 2000);
+                    } else {
+                        messageElement.textContent = data.message || '密碼更新失敗，請檢查目前密碼是否正確';
+                        messageElement.className = 'error-message';
+                    }
+                    
+                    // 清理
+                    document.head.removeChild(script);
+                    delete window[callbackName];
+                    
+                    // 恢復按鈕狀態
+                    setTimeout(() => {
+                        saveButton.disabled = false;
+                        saveButton.textContent = originalText;
+                        saveButton.classList.remove('loading');
+                    }, 100);
+                };
+                
+                // 創建 script 標籤
+                const script = document.createElement('script');
+                const url = `${SCRIPT_URL}?action=resetPassword&username=${encodeURIComponent(userData.username)}&currentPassword=${encodeURIComponent(currentPassword)}&newPassword=${encodeURIComponent(newPassword)}&callback=${callbackName}`;
+                
+                script.src = url;
+                script.onerror = function() {
+                    messageElement.textContent = '網路連線失敗，請稍後重試';
+                    messageElement.className = 'error-message';
+                    
+                    // 清理
+                    document.head.removeChild(script);
+                    delete window[callbackName];
+                    
+                    setTimeout(() => {
+                        saveButton.disabled = false;
+                        saveButton.textContent = originalText;
+                        saveButton.classList.remove('loading');
+                    }, 100);
+                };
+                
+                // 設置超時
+                setTimeout(() => {
+                    if (window[callbackName]) {
+                        messageElement.textContent = '請求超時，請稍後重試';
+                        messageElement.className = 'error-message';
+                        
+                        document.head.removeChild(script);
+                        delete window[callbackName];
+                        
+                        setTimeout(() => {
+                            saveButton.disabled = false;
+                            saveButton.textContent = originalText;
+                            saveButton.classList.remove('loading');
+                        }, 100);
+                    }
+                }, 10000); // 10秒超時
+                
+                document.head.appendChild(script);
+                
+            } catch (error) {
+                console.error('密碼更新錯誤:', error);
+                messageElement.textContent = `密碼更新失敗：${error.message}`;
+                messageElement.className = 'error-message';
                 
                 setTimeout(() => {
                     saveButton.disabled = false;
                     saveButton.textContent = originalText;
+                    saveButton.classList.remove('loading');
                 }, 100);
             }
-        }, 10000); // 10秒超時
-        
-        document.head.appendChild(script);
-        
-    } catch (error) {
-        console.error('密碼更新錯誤:', error);
-        messageElement.textContent = `密碼更新失敗：${error.message}`;
-        messageElement.className = 'error-message';
-        
-        setTimeout(() => {
-            saveButton.disabled = false;
-            saveButton.textContent = originalText;
-        }, 100);
-    }
-}
+        }
 
+        // 添加到 JavaScript 中任何位置
+        async function testApiConnection() {
+            try {
+                console.log('測試 API 連線...');
+                const response = await fetch(`${SCRIPT_URL}?action=test`);
+                const data = await response.json();
+                console.log('API 測試結果:', data);
+                return data;
+            } catch (error) {
+                console.error('API 連線測試失敗:', error);
+                return { success: false, error: error.message };
+            }
+        }
 
-
-// 添加到 JavaScript 中任何位置
-async function testApiConnection() {
-    try {
-        console.log('測試 API 連線...');
-        const response = await fetch(`${SCRIPT_URL}?action=test`);
-        const data = await response.json();
-        console.log('API 測試結果:', data);
-        return data;
-    } catch (error) {
-        console.error('API 連線測試失敗:', error);
-        return { success: false, error: error.message };
-    }
-}
-
-// 在登入成功後調用測試
-function showDeliveryForm() {
-    document.getElementById('login-container').classList.add('hidden');
-    document.getElementById('delivery-container').classList.remove('hidden');
-    document.getElementById('welcome-message').textContent = `歡迎：${userData.name}`;
-    
-    // 確保模態框是隱藏的
-    document.getElementById('password-modal').classList.add('hidden');
-    
-    // 測試 API 連線
-    testApiConnection();
-    
-    // 啟動閒置計時器
-    resetInactivityTimer();
-}
-        
-
+        // 在登入成功後調用測試
+        function showDeliveryForm() {
+            document.getElementById('login-container').classList.add('hidden');
+            document.getElementById('delivery-container').classList.remove('hidden');
+            document.getElementById('welcome-message').textContent = `歡迎：${userData.name}`;
+            
+            // 確保模態框是隱藏的
+            document.getElementById('password-modal').classList.add('hidden');
+            
+            // 測試 API 連線
+            testApiConnection();
+            
+            // 啟動閒置計時器
+            resetInactivityTimer();
+        }
 
         // 載入下拉選單資料
         async function loadDropdownData() {
@@ -876,110 +1174,113 @@ function showDeliveryForm() {
             });
         }
 
-async function handleSubmit() {
-    const deliveryLocation = document.getElementById('delivery-location').value.trim();
-    const vehicleType = document.getElementById('vehicle-type').value.trim();
-    const productLoad = document.getElementById('product-load').value.trim();
-    const productUnload = document.getElementById('product-unload').value.trim();
-    const emptyLoad = document.getElementById('empty-load').value.trim();
-    const emptyUnload = document.getElementById('empty-unload').value.trim();
+        async function handleSubmit() {
+            const deliveryLocation = document.getElementById('delivery-location').value.trim();
+            const vehicleType = document.getElementById('vehicle-type').value.trim();
+            const productLoad = document.getElementById('product-load').value.trim();
+            const productUnload = document.getElementById('product-unload').value.trim();
+            const emptyLoad = document.getElementById('empty-load').value.trim();
+            const emptyUnload = document.getElementById('empty-unload').value.trim();
 
-    const messageElement = document.getElementById('submit-message');
+            const messageElement = document.getElementById('submit-message');
 
-    if (!deliveryLocation || !vehicleType) {
-        messageElement.textContent = '請填寫配送點和載具簡稱';
-        messageElement.className = 'error-message';
-        return;
-    }
-
-    const submitButton = document.getElementById('submit-btn');
-    const resetButton = document.getElementById('reset-btn');
-    const originalText = submitButton.textContent;
-    
-    submitButton.disabled = true;
-    resetButton.disabled = true;
-    submitButton.textContent = '提交中...';
-    
-    messageElement.textContent = '資料提交中...';
-    messageElement.className = 'message';
-
-    try {
-        // 使用 JSONP 方式提交（類似密碼更改的方式）
-        const callbackName = 'submitDataCallback_' + Date.now();
-        
-        // 創建全域回調函數
-        window[callbackName] = function(data) {
-            console.log('資料提交回應:', data);
-            
-            if (data.success) {
-                messageElement.textContent = '資料已成功送出！';
-                messageElement.className = 'message';
-                resetForm();
-            } else {
-                messageElement.textContent = `提交失敗：${data.message || '未知錯誤'}`;
+            if (!deliveryLocation || !vehicleType) {
+                messageElement.textContent = '請填寫配送點和載具簡稱';
                 messageElement.className = 'error-message';
+                return;
             }
+
+            const submitButton = document.getElementById('submit-btn');
+            const resetButton = document.getElementById('reset-btn');
+            const originalText = submitButton.textContent;
             
-            // 清理
-            document.head.removeChild(script);
-            delete window[callbackName];
+            submitButton.disabled = true;
+            resetButton.disabled = true;
+            submitButton.textContent = '提交中...';
+            submitButton.classList.add('loading');
             
-            // 恢復按鈕狀態
-            submitButton.disabled = false;
-            resetButton.disabled = false;
-            submitButton.textContent = originalText;
-        };
-        
-        // 創建 script 標籤
-        const script = document.createElement('script');
-        const url = `${SCRIPT_URL}?action=submitData&callback=${callbackName}&driverName=${encodeURIComponent(userData.name)}&deliveryLocation=${encodeURIComponent(deliveryLocation)}&vehicleType=${encodeURIComponent(vehicleType)}&productLoad=${encodeURIComponent(productLoad || '0')}&productUnload=${encodeURIComponent(productUnload || '0')}&emptyLoad=${encodeURIComponent(emptyLoad || '0')}&emptyUnload=${encodeURIComponent(emptyUnload || '0')}`;
-        
-        script.src = url;
-        script.onerror = function() {
-            messageElement.textContent = '網路連線失敗，請稍後重試';
-            messageElement.className = 'error-message';
-            
-            // 清理
-            document.head.removeChild(script);
-            delete window[callbackName];
-            
-            // 恢復按鈕狀態
-            submitButton.disabled = false;
-            resetButton.disabled = false;
-            submitButton.textContent = originalText;
-        };
-        
-        // 設置超時
-        setTimeout(() => {
-            if (window[callbackName]) {
-                messageElement.textContent = '請求超時，請稍後重試';
-                messageElement.className = 'error-message';
+            messageElement.textContent = '資料提交中...';
+            messageElement.className = 'message';
+
+            try {
+                // 使用 JSONP 方式提交（類似密碼更改的方式）
+                const callbackName = 'submitDataCallback_' + Date.now();
                 
-                document.head.removeChild(script);
-                delete window[callbackName];
+                // 創建全域回調函數
+                window[callbackName] = function(data) {
+                    console.log('資料提交回應:', data);
+                    
+                    if (data.success) {
+                        messageElement.textContent = '資料已成功送出！';
+                        messageElement.className = 'message';
+                        resetForm();
+                    } else {
+                        messageElement.textContent = `提交失敗：${data.message || '未知錯誤'}`;
+                        messageElement.className = 'error-message';
+                    }
+                    
+                    // 清理
+                    document.head.removeChild(script);
+                    delete window[callbackName];
+                    
+                    // 恢復按鈕狀態
+                    submitButton.disabled = false;
+                    resetButton.disabled = false;
+                    submitButton.textContent = originalText;
+                    submitButton.classList.remove('loading');
+                };
+                
+                // 創建 script 標籤
+                const script = document.createElement('script');
+                const url = `${SCRIPT_URL}?action=submitData&callback=${callbackName}&driverName=${encodeURIComponent(userData.name)}&deliveryLocation=${encodeURIComponent(deliveryLocation)}&vehicleType=${encodeURIComponent(vehicleType)}&productLoad=${encodeURIComponent(productLoad || '0')}&productUnload=${encodeURIComponent(productUnload || '0')}&emptyLoad=${encodeURIComponent(emptyLoad || '0')}&emptyUnload=${encodeURIComponent(emptyUnload || '0')}`;
+                
+                script.src = url;
+                script.onerror = function() {
+                    messageElement.textContent = '網路連線失敗，請稍後重試';
+                    messageElement.className = 'error-message';
+                    
+                    // 清理
+                    document.head.removeChild(script);
+                    delete window[callbackName];
+                    
+                    // 恢復按鈕狀態
+                    submitButton.disabled = false;
+                    resetButton.disabled = false;
+                    submitButton.textContent = originalText;
+                    submitButton.classList.remove('loading');
+                };
+                
+                // 設置超時
+                setTimeout(() => {
+                    if (window[callbackName]) {
+                        messageElement.textContent = '請求超時，請稍後重試';
+                        messageElement.className = 'error-message';
+                        
+                        document.head.removeChild(script);
+                        delete window[callbackName];
+                        
+                        // 恢復按鈕狀態
+                        submitButton.disabled = false;
+                        resetButton.disabled = false;
+                        submitButton.textContent = originalText;
+                        submitButton.classList.remove('loading');
+                    }
+                }, 10000); // 10秒超時
+                
+                document.head.appendChild(script);
+                
+            } catch (error) {
+                console.error('提交錯誤:', error);
+                messageElement.textContent = `提交失敗：${error.message}`;
+                messageElement.className = 'error-message';
                 
                 // 恢復按鈕狀態
                 submitButton.disabled = false;
                 resetButton.disabled = false;
                 submitButton.textContent = originalText;
+                submitButton.classList.remove('loading');
             }
-        }, 10000); // 10秒超時
-        
-        document.head.appendChild(script);
-        
-    } catch (error) {
-        console.error('提交錯誤:', error);
-        messageElement.textContent = `提交失敗：${error.message}`;
-        messageElement.className = 'error-message';
-        
-        // 恢復按鈕狀態
-        submitButton.disabled = false;
-        resetButton.disabled = false;
-        submitButton.textContent = originalText;
-    }
-}
-
-
+        }
 
         // 重置表單
         function resetForm() {
@@ -1019,11 +1320,17 @@ async function handleSubmit() {
             const endDate = document.getElementById('end-date').value;
             const historyMessage = document.getElementById('history-message');
             const historyData = document.getElementById('history-data');
+            const filterBtn = document.getElementById('filter-btn');
             
             if (!startDate || !endDate) {
                 historyMessage.textContent = '請選擇開始和結束日期';
                 return;
             }
+            
+            // 添加載入效果
+            filterBtn.classList.add('loading');
+            filterBtn.disabled = true;
+            filterBtn.textContent = '搜尋中...';
             
             historyMessage.textContent = '載入中...';
             historyData.innerHTML = '';
@@ -1074,7 +1381,7 @@ async function handleSubmit() {
                             // 空籃下車
                             const emptyUnloadCell = document.createElement('td');
                             emptyUnloadCell.textContent = record.emptyUnload;
-                                                        row.appendChild(emptyUnloadCell);
+                            row.appendChild(emptyUnloadCell);
                             
                             historyData.appendChild(row);
                         });
@@ -1085,6 +1392,11 @@ async function handleSubmit() {
             } catch (error) {
                 console.error('載入歷史記錄錯誤:', error);
                 historyMessage.textContent = '載入歷史記錄失敗，請稍後再試';
+            } finally {
+                // 恢復按鈕狀態
+                filterBtn.classList.remove('loading');
+                filterBtn.disabled = false;
+                filterBtn.textContent = '搜尋';
             }
         }
 
