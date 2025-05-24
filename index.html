@@ -496,7 +496,7 @@
         // 全域變數
         let userData = null;
         let inactivityTimer;
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwaoJ-y3xk5AA4zXIBN8c6yk1HBnXyugTaG6HlZWPl7R2y4zBSCYGDmMN2rmJNjBwYe/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzjCo4I0dTSAPc2JwsLSgy9bgJfYSjrmgJjKAvW_PhdODft-YKgArstZLZnPvMb-UL-/exec';
         const INACTIVITY_TIME = 10 * 60 * 1000; // 10分鐘
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -851,7 +851,7 @@
                     submitButton.textContent = originalText;
                 };
                 
-                               const script = document.createElement('script');
+                                const script = document.createElement('script');
                 const url = `${SCRIPT_URL}?action=submitData&callback=${callbackName}&driverName=${encodeURIComponent(userData.name)}&deliveryLocation=${encodeURIComponent(deliveryLocation)}&vehicleType=${encodeURIComponent(vehicleType)}&productLoad=${encodeURIComponent(productLoad || '0')}&productUnload=${encodeURIComponent(productUnload || '0')}&emptyLoad=${encodeURIComponent(emptyLoad || '0')}&emptyUnload=${encodeURIComponent(emptyUnload || '0')}`;
                 
                 script.src = url;
