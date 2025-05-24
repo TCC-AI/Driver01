@@ -112,6 +112,7 @@
         input {
             width: 100%;
             padding: 16px 20px;
+            width: calc(100% - 10px); /* 減小輸入框寬度 */
             border: 2px solid rgba(102, 126, 234, 0.2);
             border-radius: 15px;
             font-size: 16px;
@@ -623,9 +624,9 @@
         /* 響應式設計 */
         @media (max-width: 480px) {
             .container {
-        width: 95%; /* 控制在手機上的寬度百分比 */
-        max-width: 900px; /* 控制在手機上的最大寬度 */
-        padding: 15px;
+        width: 90%; /* 控制在手機上的寬度百分比 */
+        max-width: 350px; /* 控制在手機上的最大寬度 */
+        padding: 15px 10px;
         border-radius: 20px;
     }
             body {
