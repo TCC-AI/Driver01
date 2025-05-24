@@ -612,19 +612,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-function showDeliveryForm() {
-    document.getElementById('login-container').classList.add('hidden');
-    document.getElementById('delivery-container').classList.remove('hidden');
-    document.getElementById('welcome-message').textContent = `歡迎：${userData.name}`;
-    
-    // 確保模態框是隱藏的
-    document.getElementById('password-modal').classList.add('hidden');
-    
-    // 啟動閒置計時器
-    resetInactivityTimer();
-}
-
-
 function showPasswordModal() {
     // 清除之前的輸入和訊息
     document.getElementById('current-password').value = '';
