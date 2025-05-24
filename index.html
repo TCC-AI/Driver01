@@ -726,64 +726,65 @@ async function handlePasswordChange() {
     messageElement.className = 'message';
     
     try {
-        // 方法1: 使用 POST 請求
-        const response = await fetch(SCRIPT_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                action: 'resetPassword',
-                username: userData.username,
-                currentPassword: currentPassword,
-                newPassword: newPassword
-            })
+        // 使用 GET 請求避免 CORS 問題
+        const url = `${SCRIPT_URL}?action=resetPassword&username=${encodeURIComponent(userData.username)}&currentPassword=${encodeURIComponent(currentPassword)}&newPassword=${encodeURIComponent(newPassword)}`;
+        
+        console.log('發送密碼更新請求 (GET)...');
+        
+        const response = await fetch(url, {
+            method: 'GET',
+            mode: 'cors',
+            credentials: 'omit'
         });
         
+        console.log('API 回應狀態:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
         const data = await response.json();
+        console.log('API 回應資料:', data);
         
         if (data.success) {
             messageElement.textContent = '密碼已成功更新！';
             messageElement.className = 'message';
             
+            // 2秒後關閉模態框
             setTimeout(() => {
                 hidePasswordModal();
+                // 清空表單
+                document.getElementById('current-password').value = '';
+                document.getElementById('new-password').value = '';
+                document.getElementById('confirm-password').value = '';
+                messageElement.textContent = '';
             }, 2000);
         } else {
-            messageElement.textContent = data.message || '密碼更新失敗';
+            console.error('密碼更新失敗:', data);
+            messageElement.textContent = data.message || '密碼更新失敗，請檢查目前密碼是否正確';
             messageElement.className = 'error-message';
         }
     } catch (error) {
-        console.error('POST 方法失敗，嘗試 GET 方法:', error);
+        console.error('密碼更新錯誤:', error);
         
-        // 方法2: 如果 POST 失敗，嘗試 GET 請求
-        try {
-            const getResponse = await fetch(`${SCRIPT_URL}?action=resetPassword&username=${encodeURIComponent(userData.username)}&currentPassword=${encodeURIComponent(currentPassword)}&newPassword=${encodeURIComponent(newPassword)}`);
-            const getData = await getResponse.json();
-            
-            if (getData.success) {
-                messageElement.textContent = '密碼已成功更新！';
-                messageElement.className = 'message';
-                
-                setTimeout(() => {
-                    hidePasswordModal();
-                }, 2000);
-            } else {
-                messageElement.textContent = getData.message || '密碼更新失敗';
-                messageElement.className = 'error-message';
-            }
-        } catch (getError) {
-            console.error('GET 方法也失敗:', getError);
+        // 根據錯誤類型提供不同的錯誤訊息
+        if (error.name === 'TypeError' && error.message.includes('fetch')) {
             messageElement.textContent = '網路連線問題，請檢查網路後重試';
-            messageElement.className = 'error-message';
+        } else if (error.message.includes('CORS')) {
+            messageElement.textContent = '跨域請求被阻擋，請聯繫系統管理員';
+        } else {
+            messageElement.textContent = `密碼更新失敗：${error.message}`;
         }
+        messageElement.className = 'error-message';
     } finally {
+        // 延遲恢復按鈕狀態
         setTimeout(() => {
             saveButton.disabled = false;
             saveButton.textContent = originalText;
         }, 100);
     }
 }
+
 
 // 添加到 JavaScript 中任何位置
 async function testApiConnection() {
