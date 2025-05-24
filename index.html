@@ -498,7 +498,7 @@ button:disabled {
     <script>
         // 全域變數
         let userData = null;
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxHCOgP0GYwoAFVStjzCy0b79jjZ6DPUVcjQCDSsOjHgPnCRT7c8DD7T5k94y_ELdPl/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3k6fv41Q4rOuDqu2B3hByjK7p_WfNpH1mIg2-U-y65GDRkypk4L18Zx_Y-2vgFkyi/exec';
 
 document.addEventListener('DOMContentLoaded', () => {
     // 登入按鈕事件
@@ -876,68 +876,109 @@ function showDeliveryForm() {
             });
         }
 
-        async function handleSubmit() {
-            const deliveryLocation = document.getElementById('delivery-location').value.trim();
-            const vehicleType = document.getElementById('vehicle-type').value.trim();
-            const productLoad = document.getElementById('product-load').value.trim();
-            const productUnload = document.getElementById('product-unload').value.trim();
-            const emptyLoad = document.getElementById('empty-load').value.trim();
-            const emptyUnload = document.getElementById('empty-unload').value.trim();
+async function handleSubmit() {
+    const deliveryLocation = document.getElementById('delivery-location').value.trim();
+    const vehicleType = document.getElementById('vehicle-type').value.trim();
+    const productLoad = document.getElementById('product-load').value.trim();
+    const productUnload = document.getElementById('product-unload').value.trim();
+    const emptyLoad = document.getElementById('empty-load').value.trim();
+    const emptyUnload = document.getElementById('empty-unload').value.trim();
 
-            const messageElement = document.getElementById('submit-message');
+    const messageElement = document.getElementById('submit-message');
 
-            if (!deliveryLocation || !vehicleType) {
-                messageElement.textContent = '請填寫配送點和載具簡稱';
+    if (!deliveryLocation || !vehicleType) {
+        messageElement.textContent = '請填寫配送點和載具簡稱';
+        messageElement.className = 'error-message';
+        return;
+    }
+
+    const submitButton = document.getElementById('submit-btn');
+    const resetButton = document.getElementById('reset-btn');
+    const originalText = submitButton.textContent;
+    
+    submitButton.disabled = true;
+    resetButton.disabled = true;
+    submitButton.textContent = '提交中...';
+    
+    messageElement.textContent = '資料提交中...';
+    messageElement.className = 'message';
+
+    try {
+        // 使用 JSONP 方式提交（類似密碼更改的方式）
+        const callbackName = 'submitDataCallback_' + Date.now();
+        
+        // 創建全域回調函數
+        window[callbackName] = function(data) {
+            console.log('資料提交回應:', data);
+            
+            if (data.success) {
+                messageElement.textContent = '資料已成功送出！';
+                messageElement.className = 'message';
+                resetForm();
+            } else {
+                messageElement.textContent = `提交失敗：${data.message || '未知錯誤'}`;
                 messageElement.className = 'error-message';
-                return;
             }
-
-            const formData = {
-                action: 'submitData',
-                driverName: userData.name,
-                deliveryLocation,
-                vehicleType,
-                productLoad: productLoad || '0',
-                productUnload: productUnload || '0',
-                emptyLoad: emptyLoad || '0',
-                emptyUnload: emptyUnload || '0'
-            };
-
-            messageElement.textContent = '資料提交中...';
-            const submitButton = document.getElementById('submit-btn'); // 獲取送出按鈕
-            const resetButton = document.getElementById('reset-btn');   // 獲取重置按鈕
-            submitButton.disabled = true; // 禁用送出按鈕
-            resetButton.disabled = true;  // 禁用重置按鈕
-
-
-            try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { // <--- 新增 Headers
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    messageElement.textContent = '資料已成功送出！';
-                    messageElement.className = 'message';
-                    resetForm(); // 成功後重置表單
-                } else {
-                    messageElement.textContent = `提交失敗：${data.message || '未知錯誤'}`; // 確保 data.message 存在
-                    messageElement.className = 'error-message';
-                }
-            } catch (error) {
-                console.error('提交錯誤:', error);
-                messageElement.textContent = '提交失敗，請檢查網路連線或稍後再試';
+            
+            // 清理
+            document.head.removeChild(script);
+            delete window[callbackName];
+            
+            // 恢復按鈕狀態
+            submitButton.disabled = false;
+            resetButton.disabled = false;
+            submitButton.textContent = originalText;
+        };
+        
+        // 創建 script 標籤
+        const script = document.createElement('script');
+        const url = `${SCRIPT_URL}?action=submitData&callback=${callbackName}&driverName=${encodeURIComponent(userData.name)}&deliveryLocation=${encodeURIComponent(deliveryLocation)}&vehicleType=${encodeURIComponent(vehicleType)}&productLoad=${encodeURIComponent(productLoad || '0')}&productUnload=${encodeURIComponent(productUnload || '0')}&emptyLoad=${encodeURIComponent(emptyLoad || '0')}&emptyUnload=${encodeURIComponent(emptyUnload || '0')}`;
+        
+        script.src = url;
+        script.onerror = function() {
+            messageElement.textContent = '網路連線失敗，請稍後重試';
+            messageElement.className = 'error-message';
+            
+            // 清理
+            document.head.removeChild(script);
+            delete window[callbackName];
+            
+            // 恢復按鈕狀態
+            submitButton.disabled = false;
+            resetButton.disabled = false;
+            submitButton.textContent = originalText;
+        };
+        
+        // 設置超時
+        setTimeout(() => {
+            if (window[callbackName]) {
+                messageElement.textContent = '請求超時，請稍後重試';
                 messageElement.className = 'error-message';
-            } finally {
-                submitButton.disabled = false; // 無論成功或失敗，都重新啟用送出按鈕
-                resetButton.disabled = false;  // 無論成功或失敗，都重新啟用重置按鈕
+                
+                document.head.removeChild(script);
+                delete window[callbackName];
+                
+                // 恢復按鈕狀態
+                submitButton.disabled = false;
+                resetButton.disabled = false;
+                submitButton.textContent = originalText;
             }
-        }
+        }, 10000); // 10秒超時
+        
+        document.head.appendChild(script);
+        
+    } catch (error) {
+        console.error('提交錯誤:', error);
+        messageElement.textContent = `提交失敗：${error.message}`;
+        messageElement.className = 'error-message';
+        
+        // 恢復按鈕狀態
+        submitButton.disabled = false;
+        resetButton.disabled = false;
+        submitButton.textContent = originalText;
+    }
+}
+
 
 
         // 重置表單
