@@ -1247,6 +1247,162 @@ input, select, textarea {
                 gap: 5px;
             }
         }
+
+        /* 新增：日期分組容器樣式 */
+.date-group-container {
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    transition: all 0.3s ease;
+}
+
+.date-group-container:hover {
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+/* 日期分組標題列 */
+.date-group-header {
+    background: linear-gradient(135deg, #667eea 0%, #43cea2 100%);
+    color: white;
+    padding: 18px 25px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.date-group-header:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #3bb89a 100%);
+}
+
+.date-group-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.date-group-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+}
+
+.date-group-summary {
+    font-size: 14px;
+    opacity: 0.9;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* 展開/收折圖示 */
+.date-group-toggle {
+    font-size: 18px;
+    font-weight: bold;
+    transition: transform 0.3s ease;
+    color: white;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* 日期分組內容區域 */
+.date-group-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+}
+
+.date-group-content.expanded {
+    max-height: 2000px; /* 足夠大的值 */
+    transition: max-height 0.6s ease-in;
+}
+
+/* 修改原有的歷史紀錄樣式 */
+.history-date-group {
+    margin-bottom: 0; /* 移除原有間距 */
+    background: transparent; /* 移除背景 */
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+}
+
+.history-date {
+    display: none; /* 隱藏原有的日期標題 */
+}
+
+.history-records {
+    padding: 20px 25px 25px;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.history-record {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    transition: all 0.3s ease;
+}
+
+.history-record:last-child {
+    margin-bottom: 0;
+}
+
+.history-record:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateX(5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* 手機版響應式調整 */
+@media (max-width: 480px) {
+    .date-group-header {
+        padding: 15px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .date-group-info {
+        width: 100%;
+    }
+    
+    .date-group-title {
+        font-size: 16px;
+    }
+    
+    .date-group-summary {
+        font-size: 13px;
+    }
+    
+    .date-group-toggle {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        width: 25px;
+        height: 25px;
+        font-size: 14px;
+    }
+    
+    .history-records {
+        padding: 15px 20px 20px;
+    }
+    
+    .history-record {
+        padding: 12px;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -2129,65 +2285,113 @@ input, select, textarea {
             }
         }
 
-        // 修改歷史紀錄顯示函數
-        function displayHistoryData(data) {
-            const historyList = document.getElementById('history-list');
-            
-            if (data.length === 0) {
-                historyList.innerHTML = '<p class="no-data">查無歷史紀錄</p>';
-                return;
-            }
-            
-            // 按日期分組
-            const groupedData = {};
-            data.forEach(record => {
-                const dateKey = record.date.split(' ')[0]; // 只取日期部分
-                if (!groupedData[dateKey]) {
-                    groupedData[dateKey] = [];
-                }
-                groupedData[dateKey].push(record);
-            });
-            
-            let html = '';
-            
-            // 按日期排序（最新的在前）
-            const sortedDates = Object.keys(groupedData).sort((a, b) => new Date(b) - new Date(a));
-            
-            sortedDates.forEach(date => {
-                const records = groupedData[date];
-                
-                html += `
-                    <div class="history-date-group">
-                        <h3 class="history-date">${date}</h3>
-                        <div class="history-records">
-                `;
-                
-                records.forEach(record => {
-                    const time = record.date.split(' ')[1]; // 只取時間部分
-                    html += `
-                        <div class="history-record">
-                            <div class="record-header">
-                                <span class="record-time">${time}</span>
-                                <span class="record-location">${record.location}</span>
-                            </div>
-                            <div class="record-details">
-                                <span class="record-category">${record.category}</span>
-                                <span class="record-type">${record.type}</span>
-                                <span class="record-vehicle">${record.vehicle}</span>
-                                <span class="record-quantity">數量：${record.quantity}</span>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                html += `
-                        </div>
-                    </div>
-                `;
-            });
-            
-            historyList.innerHTML = html;
+        // 修改歷史紀錄顯示函數 - 新增日期分組收折功能
+function displayHistoryData(data) {
+    const historyList = document.getElementById('history-list');
+    
+    if (data.length === 0) {
+        historyList.innerHTML = '<p class="no-data">查無歷史紀錄</p>';
+        return;
+    }
+    
+    // 按日期分組
+    const groupedData = {};
+    data.forEach(record => {
+        const dateKey = record.date.split(' ')[0]; // 只取日期部分
+        if (!groupedData[dateKey]) {
+            groupedData[dateKey] = [];
         }
+        groupedData[dateKey].push(record);
+    });
+    
+    let html = '';
+    
+    // 按日期排序（最新的在前）
+    const sortedDates = Object.keys(groupedData).sort((a, b) => new Date(b) - new Date(a));
+    
+    sortedDates.forEach((date, index) => {
+        const records = groupedData[date];
+        const recordCount = records.length;
+        const totalQuantity = records.reduce((sum, record) => sum + parseInt(record.quantity || 0), 0);
+        
+        // 判斷是否為今天或昨天
+        const today = new Date().toISOString().split('T')[0];
+        const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+        let dateDisplay = date;
+        
+        if (date === today) {
+            dateDisplay = `${date} (今天)`;
+        } else if (date === yesterday) {
+            dateDisplay = `${date} (昨天)`;
+        } else {
+            const weekday = new Date(date).toLocaleDateString('zh-TW', { weekday: 'short' });
+            dateDisplay = `${date} (${weekday})`;
+        }
+        
+        // 預設第一個日期群組展開，其他收折
+        const isExpanded = index === 0;
+        const expandedClass = isExpanded ? 'expanded' : '';
+        const iconRotation = isExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
+        
+        html += `
+            <div class="date-group-container">
+                <div class="date-group-header" onclick="toggleDateGroup('${date}')">
+                    <div class="date-group-info">
+                        <h3 class="date-group-title">${dateDisplay}</h3>
+                        <span class="date-group-summary">${recordCount} 筆紀錄 • 總數量: ${totalQuantity}</span>
+                    </div>
+                    <div class="date-group-toggle" id="toggle-${date}" style="transform: ${iconRotation}">
+                        ▼
+                    </div>
+                </div>
+                <div class="date-group-content ${expandedClass}" id="content-${date}">
+                    <div class="history-records">
+        `;
+        
+        records.forEach(record => {
+            const time = record.date.split(' ')[1]; // 只取時間部分
+            html += `
+                <div class="history-record">
+                    <div class="record-header">
+                        <span class="record-time">${time}</span>
+                        <span class="record-location">${record.location}</span>
+                    </div>
+                    <div class="record-details">
+                        <span class="record-category">${record.category}</span>
+                        <span class="record-type">${record.type}</span>
+                        <span class="record-vehicle">${record.vehicle}</span>
+                        <span class="record-quantity">數量：${record.quantity}</span>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += `
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    historyList.innerHTML = html;
+}
+
+// 新增：切換日期分組展開/收折的函數
+function toggleDateGroup(date) {
+    const content = document.getElementById(`content-${date}`);
+    const toggle = document.getElementById(`toggle-${date}`);
+    
+    if (content.classList.contains('expanded')) {
+        // 收折
+        content.classList.remove('expanded');
+        toggle.style.transform = 'rotate(0deg)';
+    } else {
+        // 展開
+        content.classList.add('expanded');
+        toggle.style.transform = 'rotate(180deg)';
+    }
+}
+
 
         // 修改查詢歷史紀錄的函數
         async function searchHistory() {
