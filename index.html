@@ -1,3 +1,804 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>司機配送管理系統</title>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .tab-container {
+            display: flex;
+            background-color: #f8f9fa;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background-color: white;
+            border-bottom-color: #667eea;
+            color: #667eea;
+        }
+        
+        .content {
+            padding: 20px;
+            display: none;
+        }
+        
+        .content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        /* 次標題樣式 */
+        .section-title {
+            text-align: center;
+            margin: 25px 0 20px 0;
+            position: relative;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .section-title::before,
+        .section-title::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background-color: #ddd;
+        }
+        
+        .section-title::before {
+            left: 0;
+        }
+        
+        .section-title::after {
+            right: 0;
+        }
+        
+        /* 容器樣式 */
+        .section-container {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        /* 收折功能樣式 */
+        .collapsible-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .collapsible-content {
+            display: none;
+            padding-top: 10px;
+        }
+        
+        .collapsible-content.active {
+            display: block;
+        }
+        
+        .toggle-icon {
+            transition: transform 0.3s;
+        }
+        
+        .toggle-icon.rotated {
+            transform: rotate(180deg);
+        }
+        
+        /* 組別樣式 */
+        .item-group {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: white;
+        }
+        
+        .item-group h4 {
+            margin: 0 0 15px 0;
+            color: #495057;
+            font-size: 16px;
+        }
+        
+        .item-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .item-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #5a6fd8;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .button-group {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .message {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 歷史記錄樣式 */
+        .history-filters {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .history-filters {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .history-table th,
+        .history-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            font-size: 14px;
+        }
+        
+        .history-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        .history-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        @media (max-width: 768px) {
+            .history-table {
+                font-size: 12px;
+            }
+            
+            .history-table th,
+            .history-table td {
+                padding: 6px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>司機配送管理系統</h1>
+            <p id="userInfo"></p>
+        </div>
+        
+        <div class="tab-container">
+            <div class="tab active" onclick="showTab('delivery')">配送登錄</div>
+            <div class="tab" onclick="showTab('history')">歷史記錄</div>
+            <div class="tab" onclick="showTab('password')">密碼管理</div>
+        </div>
+        
+        <!-- 配送登錄頁面 -->
+        <div id="deliveryContent" class="content active">
+            <form id="deliveryForm">
+                <!-- 配送點簡稱 -->
+                <div class="form-group">
+                    <label for="deliveryLocation">配送點簡稱：</label>
+                    <select id="deliveryLocation" name="deliveryLocation" required>
+                        <option value="">請選擇配送點</option>
+                    </select>
+                </div>
+                
+                <!-- 商品載具區塊 -->
+                <div class="section-container">
+                    <div class="section-title">商品載具</div>
+                    
+                    <!-- 第一組 (預設顯示) -->
+                    <div class="item-group">
+                        <h4>第一組</h4>
+                        <div class="item-row">
+                            <div class="form-group">
+                                <label for="category1">類別1：</label>
+                                <select id="category1" name="category1">
+                                    <option value="">請選擇類別</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="vehicleCode1">載具簡稱1：</label>
+                                <select id="vehicleCode1" name="vehicleCode1">
+                                    <option value="">請選擇載具</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="quantity1">數量1：</label>
+                                <input type="number" id="quantity1" name="quantity1" min="0" inputmode="numeric">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 收折區塊 -->
+                    <div class="collapsible-header" onclick="toggleCollapsible('productGroups')">
+                        <span>展開更多組別 (第2-4組)</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div id="productGroups" class="collapsible-content">
+                        <!-- 第二組 -->
+                        <div class="item-group">
+                            <h4>第二組</h4>
+                            <div class="item-row">
+                                <div class="form-group">
+                                    <label for="category2">類別2：</label>
+                                    <select id="category2" name="category2">
+                                        <option value="">請選擇類別</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vehicleCode2">載具簡稱2：</label>
+                                    <select id="vehicleCode2" name="vehicleCode2">
+                                        <option value="">請選擇載具</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="quantity2">數量2：</label>
+                                    <input type="number" id="quantity2" name="quantity2" min="0" inputmode="numeric">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 第三組 -->
+                        <div class="item-group">
+                            <h4>第三組</h4>
+                            <div class="item-row">
+                                <div class="form-group">
+                                    <label for="category3">類別3：</label>
+                                    <select id="category3" name="category3">
+                                        <option value="">請選擇類別</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vehicleCode3">載具簡稱3：</label>
+                                    <select id="vehicleCode3" name="vehicleCode3">
+                                        <option value="">請選擇載具</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="quantity3">數量3：</label>
+                                    <input type="number" id="quantity3" name="quantity3" min="0" inputmode="numeric">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 第四組 -->
+                        <div class="item-group">
+                            <h4>第四組</h4>
+                            <div class="item-row">
+                                <div class="form-group">
+                                    <label for="category4">類別4：</label>
+                                    <select id="category4" name="category4">
+                                        <option value="">請選擇類別</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vehicleCode4">載具簡稱4：</label>
+                                    <select id="vehicleCode4" name="vehicleCode4">
+                                        <option value="">請選擇載具</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="quantity4">數量4：</label>
+                                    <input type="number" id="quantity4" name="quantity4" min="0" inputmode="numeric">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 空載具回報區塊 -->
+                <div class="section-container">
+                    <div class="section-title">空載具回報</div>
+                    
+                    <!-- 第五組 (預設顯示) -->
+                    <div class="item-group">
+                        <h4>第五組</h4>
+                        <div class="item-row">
+                            <div class="form-group">
+                                <label for="category5">類別5：</label>
+                                <select id="category5" name="category5">
+                                    <option value="">請選擇類別</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="vehicleCode5">載具簡稱5：</label>
+                                <select id="vehicleCode5" name="vehicleCode5">
+                                    <option value="">請選擇載具</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="quantity5">數量5：</label>
+                                <input type="number" id="quantity5" name="quantity5" min="0" inputmode="numeric">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 收折區塊 -->
+                    <div class="collapsible-header" onclick="toggleCollapsible('emptyGroups')">
+                        <span>展開更多組別 (第6-8組)</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div id="emptyGroups" class="collapsible-content">
+                        <!-- 第六組 -->
+                        <div class="item-group">
+                            <h4>第六組</h4>
+                            <div class="item-row">
+                                <div class="form-group">
+                                    <label for="category6">類別6：</label>
+                                    <select id="category6" name="category6">
+                                        <option value="">請選擇類別</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vehicleCode6">載具簡稱6：</label>
+                                    <select id="vehicleCode6" name="vehicleCode6">
+                                        <option value="">請選擇載具</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="quantity6">數量6：</label>
+                                    <input type="number" id="quantity6" name="quantity6" min="0" inputmode="numeric">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 第七組 -->
+                        <div class="item-group">
+                            <h4>第七組</h4>
+                            <div class="item-row">
+                                <div class="form-group">
+                                    <label for="category7">類別7：</label>
+                                    <select id="category7" name="category7">
+                                        <option value="">請選擇類別</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vehicleCode7">載具簡稱7：</label>
+                                    <select id="vehicleCode7" name="vehicleCode7">
+                                        <option value="">請選擇載具</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="quantity7">數量7：</label>
+                                    <input type="number" id="quantity7" name="quantity7" min="0" inputmode="numeric">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 第八組 -->
+                        <div class="item-group">
+                            <h4>第八組</h4>
+                            <div class="item-row">
+                                <div class="form-group">
+                                    <label for="category8">類別8：</label>
+                                    <select id="category8" name="category8">
+                                        <option value="">請選擇類別</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vehicleCode8">載具簡稱8：</label>
+                                    <select id="vehicleCode8" name="vehicleCode8">
+                                        <option value="">請選擇載具</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="quantity8">數量8：</label>
+                                    <input type="number" id="quantity8" name="quantity8" min="0" inputmode="numeric">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">送出</button>
+                    <button type="reset" class="btn btn-secondary">重置</button>
+                </div>
+            </form>
+            
+            <div id="deliveryMessage"></div>
+        </div>
+        
+        <!-- 歷史記錄頁面 -->
+        <div id="historyContent" class="content">
+            <div class="history-filters">
+                <div class="form-group">
+                    <label for="historyDriverName">司機姓名：</label>
+                    <input type="text" id="historyDriverName" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="startDate">開始日期：</label>
+                    <input type="date" id="startDate">
+                </div>
+                <div class="form-group">
+                    <label for="endDate">結束日期：</label>
+                    <input type="date" id="endDate">
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button onclick="searchHistory()" class="btn btn-primary">查詢</button>
+            </div>
+            
+            <div id="historyResults"></div>
+        </div>
+        
+        <!-- 密碼管理頁面 -->
+        <div id="passwordContent" class="content">
+            <form id="passwordForm">
+                <div class="form-group">
+                    <label for="currentPassword">目前密碼：</label>
+                    <input type="password" id="currentPassword" name="currentPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="newPassword">新密碼：</label>
+                    <input type="password" id="newPassword" name="newPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">確認新密碼：</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                </div>
+                
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">更改密碼</button>
+                </div>
+            </form>
+            
+            <div id="passwordMessage"></div>
+        </div>
+    </div>
+
+    <script>
+        // 全域變數
+        let currentUser = null;
+        let dropdownData = {};
+        
+        // 頁面載入時執行
+        window.onload = function() {
+            checkLoginStatus();
+            loadDropdownData();
+            setDefaultDates();
+        };
+        
+        // 檢查登入狀態
+        function checkLoginStatus() {
+            const userData = localStorage.getItem('userData');
+            if (!userData) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            currentUser = JSON.parse(userData);
+            document.getElementById('userInfo').textContent = `歡迎，${currentUser.name}`;
+            document.getElementById('historyDriverName').value = currentUser.name;
+        }
+        
+        // 載入下拉選單資料
+        function loadDropdownData() {
+            showLoading('正在載入選單資料...');
+            
+            fetch('https://script.google.com/macros/s/AKfycbxkYpQWSU3AJ3SRSwWkNd2JBrwxu5VZrXLEpDppth0dRWwFErqgeCFro2xcfkAukOvu/exec?action=getDropdownData')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        dropdownData = data.data;
+                        populateDropdowns();
+                        hideLoading();
+                    } else {
+                        showMessage('載入選單資料失敗：' + data.message, 'error');
+                        hideLoading();
+                    }
+                })
+                .catch(error => {
+                    console.error('載入下拉選單資料錯誤:', error);
+                    showMessage('載入選單資料時發生錯誤', 'error');
+                    hideLoading();
+                });
+        }
+        
+        // 填充下拉選單
+        function populateDropdowns() {
+            // 填充配送點選單
+            const deliveryLocationSelect = document.getElementById('deliveryLocation');
+            dropdownData.deliveryLocations.forEach(location => {
+                const option = document.createElement('option');
+                option.value = location;
+                option.textContent = location;
+                deliveryLocationSelect.appendChild(option);
+            });
+            
+            // 填充類別選單 (1-8)
+            for (let i = 1; i <= 8; i++) {
+                const categorySelect = document.getElementById(`category${i}`);
+                dropdownData.categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category;
+                    option.textContent = category;
+                    categorySelect.appendChild(option);
+                });
+            }
+            
+            // 填充載具選單 (1-8)
+            for (let i = 1; i <= 8; i++) {
+                const vehicleSelect = document.getElementById(`vehicleCode${i}`);
+                dropdownData.vehicles.forEach(vehicle => {
+                    const option = document.createElement('option');
+                    option.value = vehicle;
+                    option.textContent = vehicle;
+                    vehicleSelect.appendChild(option);
+                });
+            }
+        }
+        
+        // 切換標籤頁
+        function showTab(tabName) {
+            // 隱藏所有內容
+            const contents = document.querySelectorAll('.content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // 移除所有標籤的active類別
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // 顯示選中的內容和標籤
+            document.getElementById(tabName + 'Content').classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // 收折功能
+        function toggleCollapsible(elementId) {
+            const content = document.getElementById(elementId);
+            const header = event.currentTarget;
+            const icon = header.querySelector('.toggle-icon');
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                icon.classList.remove('rotated');
+                header.querySelector('span').textContent = header.querySelector('span').textContent.replace('收起', '展開');
+            } else {
+                content.classList.add('active');
+                icon.classList.add('rotated');
+                header.querySelector('span').textContent = header.querySelector('span').textContent.replace('展開', '收起');
+            }
+        }
+        
+        // 設定預設日期
+        function setDefaultDates() {
+            const today = new Date();
+            const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+            
+            document.getElementById('startDate').value = oneWeekAgo.toISOString().split('T')[0];
+            document.getElementById('endDate').value = today.toISOString().split('T')[0];
+        }
+        
+        // 配送表單提交
+        document.getElementById('deliveryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = {
+                action: 'submitDelivery',
+                driverName: currentUser.name,
+                deliveryDate: new Date().toISOString().split('T')[0],
+                deliveryLocation: formData.get('deliveryLocation')
+            };
+            
+            // 收集所有組別的資料
+            for (let i = 1; i <= 8; i++) {
+                const category = formData.get(`category${i}`);
+                const vehicleCode = formData.get(`vehicleCode${i}`);
+                const quantity = formData.get(`quantity${i}`);
+                
+                if (category || vehicleCode || quantity) {
+                    data[`category${i}`] = category || '';
+                    data[`vehicleCode${i}`] = vehicleCode || '';
+                    data[`quantity${i}`] = quantity || '0';
+                }
+            }
+            
+            // 檢查是否至少填寫了一組資料
+            let hasData = false;
+            for (let i = 1; i <= 8; i++) {
+                if (data[`category${i}`] || data[`vehicleCode${i}`] || (data[`quantity${i}`] && data[`quantity${i}`] !== '0')) {
+                    hasData = true;
+                    break;
+                }
+            }
+            
+            if (!hasData) {
+                showMessage('請至少填寫一組完整的配送資料', 'error');
+                return;
+            }
+            
+            submitDeliveryData(data);
+        });
+        
+        // 提交配送資料
+        function submitDeliveryData(data) {
+            showLoading('正在提交資料...');
+            
+            fetch('https://script.google.com/macros/s/AKfycbxkYpQWSU3AJ3SRSwWkNd2JBrwxu5VZrXLEpDppth0dRWwFErqgeCFro2xcfkAukOvu/exec', {
+                method: 'POST',
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                hideLoading();
+                if (result.success) {
+                    showMessage('配送資料提交成功！', 'success');
+                    document.getElementById('deliveryForm').reset();
+                } else {
+                    showMessage('提交失敗：' + result.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('提交錯誤:', error);
+                hideLoading();
+                showMessage('提交時發生錯誤，請稍後再試', 'error');
+            });
+        }
+        
+        // 查詢歷史記錄
+        function searchHistory() {
+            const driverName = document.getElementById('historyDriverName').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            if (!startDate || !endDate) {
+                showMessage('請選擇查詢日期範圍', 'error');
+                return;
+            }
+            
+            showLoading('正在查詢歷史記錄...');
+            
+            const params = new URLSearchParams({
+                action: 'getHistory',
+                driverName: driverName,
+                startDate: startDate,
+                endDate: endDate
             });
             
             fetch(`https://script.google.com/macros/s/AKfycbxkYpQWSU3AJ3SRSwWkNd2JBrwxu5VZrXLEpDppth0dRWwFErqgeCFro2xcfkAukOvu/exec?${params}`)
@@ -106,7 +907,7 @@
                 newPassword: newPassword
             };
             
-            fetch('https://script.google.com/macros/s/AKfycbwVZBXN7yvNmFVPxPfgXIBQJOKOGdYDNEBr9oRNEaKQGbE9XGpWGjXNJNdTMhZLHNJJ/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbxkYpQWSU3AJ3SRSwWkNd2JBrwxu5VZrXLEpDppth0dRWwFErqgeCFro2xcfkAukOvu/exec', {
                 method: 'POST',
                 body: JSON.stringify(data)
             })
