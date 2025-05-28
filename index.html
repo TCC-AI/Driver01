@@ -779,20 +779,78 @@ input, select, textarea {
         font-size: 14px;
     }
 
-    /* 新增：區段容器在手機上的樣式 */
-    .section-container {
-        padding: 15px;
-        margin-bottom: 20px;
-    }
-    
-    .section-title h2 {
-        font-size: 16px;
-    }
+   /* 區域容器樣式 */
+.section-container {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border: 3px solid transparent; /* 預設透明邊框 */
+    transition: all 0.3s ease;
+}
 
-    .category-group {
-        padding: 12px;
-        margin-bottom: 15px;
-    }
+/* 商品載具區域 - 黃色邊框 */
+.section-container.product-section {
+    border: 3px solid #f1c40f;
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.08),
+        0 0 20px rgba(241, 196, 15, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.section-container.product-section:hover {
+    box-shadow: 
+        0 12px 35px rgba(0, 0, 0, 0.12),
+        0 0 25px rgba(241, 196, 15, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+}
+
+/* 空載具回報區域 - 藍色邊框 */
+.section-container.empty-section {
+    border: 3px solid #3498db;
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.08),
+        0 0 20px rgba(52, 152, 219, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.section-container.empty-section:hover {
+    box-shadow: 
+        0 12px 35px rgba(0, 0, 0, 0.12),
+        0 0 25px rgba(52, 152, 219, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+}
+
+/* 標題顏色配合邊框 */
+.section-container.product-section .section-title h2 {
+    background: linear-gradient(135deg, #f39c12, #f1c40f);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.section-container.empty-section .section-title h2 {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* 標題線條顏色配合 */
+.section-container.product-section .section-line {
+    background: linear-gradient(135deg, #f39c12, #f1c40f);
+}
+
+.section-container.empty-section .section-line {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
 
     /* 新增：展開按鈕在手機上的樣式 */
     .expand-btn {
